@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>JQuery AJAX - Hàm Load Nâng Cao (10 Kiểu)</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .part {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: left; /* Đảm bảo nội dung bên trong mỗi phần được căn trái */
+        }
+        .content-box {
+            min-height: 150px;
+            width: calc(100% - 30px); /* Adjust width for padding */
+            background-color: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            padding: 15px;
+            overflow-y: auto;
+            margin: 20px auto; /* Căn giữa */
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .content-box:empty:before {
+            content: "Nội dung sẽ hiển thị ở đây.";
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        input[type="button"], select {
+            padding: 10px 20px;
+            margin: 8px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input[type="button"]:hover, select:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        input[type="button"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        hr {
+            border: none;
+            border-top: 4px dashed #95a5a6;
+            margin: 50px 0;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+            text-align: center;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .loading-indicator {
+            display: none;
+            margin-top: 15px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+    <!-- Nhúng thư viện jQuery từ CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            // Function to show/hide message
+            function showMessage(elementId, type, text) {
+                $(elementId).removeClass().addClass("message " + type).text(text).fadeIn(300);
+            }
+
+            // Function to hide loading indicator
+            function hideLoading(elementId) {
+                $(elementId).fadeOut(300);
+            }
+
+            // --- Part 1: Basic Load ---
+            $("#loadBasicBtn1").click(function() {
+                $("#basicLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#basicLoadContent").load("txn.html", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#basicLoadMessage", "success", "Đã tải Tin Xem Nhiều thành công!");
+                        $("#basicLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#basicLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                        $("#basicLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            $("#loadBasicBtn2").click(function() {
+                $("#basicLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#basicLoadContent").load("tnb.html", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#basicLoadMessage", "success", "Đã tải Tin Nổi Bật thành công!");
+                        $("#basicLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#basicLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                        $("#basicLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 2: Load with Selector ---
+            $("#loadPartialBtn").click(function() {
+                $("#partialLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                // Tải chỉ nội dung bên trong div có id 'specific-section' từ partial_content.html
+                $("#partialLoadContent").load("partial_content.html #specific-section", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#partialLoadMessage", "success", "Đã tải thành công một phần nội dung từ partial_content.html!");
+                        $("#partialLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#partialLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                        $("#partialLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 3: Load with Callback Function ---
+            $("#loadCallbackBtn").click(function() {
+                $("#callbackLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#callbackLoadContent").load("txn.html", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#callbackLoadMessage", "success", "Đã tải nội dung với Callback thành công!");
+                        $("#callbackLoadContent").removeClass("info");
+                    }
+                    if (statusTxt == "error") {
+                        showMessage("#callbackLoadMessage", "error", "Lỗi khi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                        $("#callbackLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 4: Load with Data (POST Request) ---
+            $("#loadDataBtn").click(function() {
+                $("#dataLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                // Khi gửi data, load() sẽ tự động sử dụng phương thức POST.
+                $("#dataLoadContent").load("load_data_target.html", { name: "Người dùng", city: "Hồ Chí Minh" }, function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#dataLoadMessage", "success", "Đã gửi dữ liệu POST và tải nội dung. Kiểm tra tab Network (F12)!");
+                        $("#dataLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#dataLoadMessage", "error", "Lỗi khi tải nội dung với dữ liệu: " + xhr.status + ": " + xhr.statusText);
+                        $("#dataLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 5: Load with Error Handling ---
+            $("#loadErrorBtnSuccess").click(function() {
+                $("#errorLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#errorLoadContent").load("tnb.html", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#errorLoadMessage", "success", "Tải file 'tnb.html' thành công.");
+                        $("#errorLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#errorLoadMessage", "error", "Lỗi khi tải 'tnb.html': " + xhr.status + ": " + xhr.statusText);
+                        $("#errorLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            $("#loadErrorBtnFail").click(function() {
+                $("#errorLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#errorLoadContent").load("non_existent_file_xyz.html", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#errorLoadMessage", "success", "Đã tải file 'non_existent_file_xyz.html' thành công (Có vẻ không đúng!).");
+                        $("#errorLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#errorLoadMessage", "error", "Lỗi khi tải file 'non_existent_file_xyz.html': " + xhr.status + ": " + xhr.statusText + ". Đây là cách xử lý lỗi!");
+                        $("#errorLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 6: Load with Visual Effects (Chaining) ---
+            $("#loadEffectBtn").click(function() {
+                $("#effectLoadContent").fadeOut(400, function() { // Fade out before loading
+                    $(this).html("").removeClass("success error").addClass("info").text("Đang tải và làm hiệu ứng...");
+                    $(this).load("txn.html", function(responseTxt, statusTxt, xhr) {
+                        if (statusTxt == "success") {
+                            $(this).fadeIn(800); // Fade in after loading
+                            showMessage("#effectLoadMessage", "success", "Đã tải nội dung với hiệu ứng Fade In/Out.");
+                            $("#effectLoadContent").removeClass("info");
+                        } else {
+                            $(this).fadeIn(800);
+                            showMessage("#effectLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                            $("#effectLoadContent").removeClass("info");
+                        }
+                    });
+                });
+            });
+
+            // --- Part 7: Load Plain Text File ---
+            $("#loadPlainTextBtn").click(function() {
+                $("#plainTextLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                $("#plainTextLoadContent").load("plain_text_content.txt", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#plainTextLoadMessage", "success", "Đã tải file văn bản thuần túy.");
+                        $("#plainTextLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#plainTextLoadMessage", "error", "Lỗi tải file văn bản: " + xhr.status + ": " + xhr.statusText);
+                        $("#plainTextLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 8: Load with URL Parameters (GET Simulated) ---
+            $("#loadGetParamsBtn").click(function() {
+                $("#getParamsLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                // Gửi tham số qua URL. load() sẽ tự động dùng GET khi không có object data thứ 2.
+                $("#getParamsLoadContent").load("target_get_params.html?category=sports&limit=5", function(responseTxt, statusTxt, xhr) {
+                    if (statusTxt == "success") {
+                        showMessage("#getParamsLoadMessage", "success", "Đã tải nội dung với tham số URL.");
+                        $("#getParamsLoadContent").removeClass("info");
+                    } else {
+                        showMessage("#getParamsLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                        $("#getParamsLoadContent").removeClass("info");
+                    }
+                });
+            });
+
+            // --- Part 9: Load with Loading Indicator ---
+            $("#loadIndicatorBtn").click(function() {
+                $("#indicatorLoadContent").html("").removeClass("success error");
+                $("#loadingIndicatorMessage").show(); // Show loading message
+                $("#indicatorLoadContent").load("tnb.html", function(responseTxt, statusTxt, xhr) {
+                    hideLoading("#loadingIndicatorMessage"); // Hide loading message
+                    if (statusTxt == "success") {
+                        showMessage("#indicatorLoadMessage", "success", "Đã tải nội dung và ẩn thông báo đang tải.");
+                    } else {
+                        showMessage("#indicatorLoadMessage", "error", "Lỗi tải nội dung: " + xhr.status + ": " + xhr.statusText);
+                    }
+                });
+            });
+
+            // --- Part 10: Dynamic File Load ---
+            $("#dynamicLoadSelect").change(function() {
+                const selectedFile = $(this).val();
+                if (selectedFile) {
+                    $("#dynamicLoadContent").html("").removeClass("success error").addClass("info").text("Đang tải...");
+                    $("#dynamicLoadContent").load(selectedFile, function(responseTxt, statusTxt, xhr) {
+                        if (statusTxt == "success") {
+                            showMessage("#dynamicLoadMessage", "success", `Đã tải file "${selectedFile}" thành công.`);
+                            $("#dynamicLoadContent").removeClass("info");
+                        } else {
+                            showMessage("#dynamicLoadMessage", "error", `Lỗi khi tải file "${selectedFile}": ` + xhr.status + ": " + xhr.statusText);
+                            $("#dynamicLoadContent").removeClass("info");
+                        }
+                    });
+                } else {
+                    $("#dynamicLoadContent").html("").removeClass("success error");
+                    showMessage("#dynamicLoadMessage", "info", "Vui lòng chọn một file để tải.");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>JQuery AJAX - Hàm Load Nâng Cao (10 Kiểu Khác Nhau)</h1>
+
+        <!-- Part 1: Basic Load -->
+        <div class="part">
+            <h2>1. Tải Cơ Bản (Basic Load)</h2>
+            <p>Tải toàn bộ nội dung của một file HTML vào một phần tử.</p>
+            <input type="button" id="loadBasicBtn1" value="Tải Tin Xem Nhiều" />
+            <input type="button" id="loadBasicBtn2" value="Tải Tin Nổi Bật" />
+            <div id="basicLoadContent" class="content-box"></div>
+            <div id="basicLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 2: Load with Selector -->
+        <div class="part">
+            <h2>2. Tải Với Bộ Chọn (Load with Selector)</h2>
+            <p>Tải chỉ một phần cụ thể của một file HTML (dựa trên ID hoặc class) vào phần tử đích.</p>
+            <input type="button" id="loadPartialBtn" value="Tải Phần Cụ Thể" />
+            <div id="partialLoadContent" class="content-box"></div>
+            <div id="partialLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 3: Load with Callback Function -->
+        <div class="part">
+            <h2>3. Tải Với Hàm Callback (Load with Callback)</h2>
+            <p>Thực thi một hàm sau khi nội dung được tải thành công hoặc thất bại.</p>
+            <input type="button" id="loadCallbackBtn" value="Tải và Callback" />
+            <div id="callbackLoadContent" class="content-box"></div>
+            <div id="callbackLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 4: Load with Data (POST Request) -->
+        <div class="part">
+            <h2>4. Tải Với Dữ Liệu (POST Request)</h2>
+            <p>Gửi dữ liệu POST kèm theo yêu cầu tải nội dung. Hàm `load()` sẽ tự động chuyển sang phương thức POST khi có dữ liệu.</p>
+            <input type="button" id="loadDataBtn" value="Tải và Gửi Dữ Liệu" />
+            <div id="dataLoadContent" class="content-box"></div>
+            <div id="dataLoadMessage" class="message"></div>
+            <p><small>Lưu ý: Dữ liệu POST chỉ có thể được xử lý bởi một máy chủ thực. Ở đây chỉ demo cách gửi dữ liệu.</small></p>
+        </div>
+
+        <hr />
+
+        <!-- Part 5: Load with Error Handling -->
+        <div class="part">
+            <h2>5. Tải Với Xử Lý Lỗi (Error Handling)</h2>
+            <p>Kiểm tra trạng thái của yêu cầu tải để xử lý khi thành công hoặc gặp lỗi (ví dụ: file không tồn tại).</p>
+            <input type="button" id="loadErrorBtnSuccess" value="Tải Thành Công (tnb.html)" />
+            <input type="button" id="loadErrorBtnFail" value="Tải Thất Bại (file không tồn tại)" />
+            <div id="errorLoadContent" class="content-box"></div>
+            <div id="errorLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 6: Load with Visual Effects (Chaining) -->
+        <div class="part">
+            <h2>6. Tải Với Hiệu Ứng Hình Ảnh (Visual Effects)</h2>
+            <p>Ẩn nội dung, tải file, sau đó hiển thị lại với hiệu ứng.</p>
+            <input type="button" id="loadEffectBtn" value="Tải với Hiệu Ứng" />
+            <div id="effectLoadContent" class="content-box"></div>
+            <div id="effectLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 7: Load Plain Text File -->
+        <div class="part">
+            <h2>7. Tải File Văn Bản Thuần Túy (Plain Text File)</h2>
+            <p>Tải nội dung từ một file `.txt` (jQuery `load()` sẽ chèn nội dung dạng HTML thuần túy).</p>
+            <input type="button" id="loadPlainTextBtn" value="Tải File Text" />
+            <div id="plainTextLoadContent" class="content-box"></div>
+            <div id="plainTextLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 8: Load with URL Parameters (GET Simulated) -->
+        <div class="part">
+            <h2>8. Tải Với Tham Số URL (GET Simulated)</h2>
+            <p>Tải nội dung và thêm tham số vào URL yêu cầu (tương tự GET). Script đích có thể sử dụng các tham số này.</p>
+            <input type="button" id="loadGetParamsBtn" value="Tải với Tham Số GET" />
+            <div id="getParamsLoadContent" class="content-box"></div>
+            <div id="getParamsLoadMessage" class="message"></div>
+            <p><small>Lưu ý: File HTML tĩnh không thể xử lý tham số GET, nhưng bạn có thể kiểm tra tab Network (F12) để thấy tham số đã được gửi.</small></p>
+        </div>
+
+        <hr />
+
+        <!-- Part 9: Load with Loading Indicator -->
+        <div class="part">
+            <h2>9. Tải Với Chỉ Báo Đang Tải (Loading Indicator)</h2>
+            <p>Hiển thị một thông báo "Đang tải..." trong khi chờ nội dung được tải về.</p>
+            <input type="button" id="loadIndicatorBtn" value="Tải với Chỉ Báo" />
+            <div id="loadingIndicatorMessage" class="loading-indicator">Đang tải nội dung... Vui lòng chờ!</div>
+            <div id="indicatorLoadContent" class="content-box"></div>
+            <div id="indicatorLoadMessage" class="message"></div>
+        </div>
+
+        <hr />
+
+        <!-- Part 10: Dynamic File Load -->
+        <div class="part">
+            <h2>10. Tải File Động (Dynamic File Load)</h2>
+            <p>Chọn một file từ danh sách để tải nội dung động vào khung bên dưới.</p>
+            <select id="dynamicLoadSelect">
+                <option value="">-- Chọn File --</option>
+                <option value="txn.html">Tin Xem Nhiều</option>
+                <option value="tnb.html">Tin Nổi Bật</option>
+                <option value="partial_content.html">Nội dung Một Phần</option>
+                <option value="plain_text_content.txt">File Text Thuần Túy</option>
+            </select>
+            <div id="dynamicLoadContent" class="content-box"></div>
+            <div id="dynamicLoadMessage" class="message"></div>
+        </div>
+
+    </div>
+</body>
+</html>

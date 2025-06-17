@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuery Table Interaction</title>
+    <style>
+        /* CSS from your image */
+        .hightlight {
+            color: #900;
+            background-color: #9C0;
+        }
+        .hang {
+            cursor: pointer;
+        }
+        /* Basic table styling for better readability (optional) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-links a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <h1>Thao tac Jquery voi the &lt;input name="ten"&gt;</h1>
+    <h2>- Table như hình H02</h2>
+
+    <form id="form1" method="post" action="loaitin_them.php">
+        <table id="dstin" align="center" border="1" cellpadding="4" cellspacing="0" width="600">
+            <thead>
+                <tr class="hang">
+                    <th align="left"><input id="chonhet" type="checkbox"/></th>
+                    <th>idLT</th>
+                    <th>Tên loại tin</th>
+                    <th>Ẩn hiện</th>
+                    <th>Thứ tự</th>
+                    <th>Thể loại</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hang">
+                    <td><input name="chon" id="chon3" type="checkbox" value="3" class="chon"/></td>
+                    <td>3</td>
+                    <td>Du lịch</td>
+                    <td width="100">Đang hiện</td>
+                    <td>2</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=3">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=3" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+                <tr class="hang">
+                    <td><input name="chon" id="chon9" type="checkbox" value="9" class="chon"/></td>
+                    <td>9</td>
+                    <td>Xã hội</td>
+                    <td width="100">Đang hiện</td>
+                    <td>3</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=9">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=9" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            // Apply .hang class for pointer cursor on rows
+            // This is already done via the HTML, but jQuery can dynamically add/remove it if needed.
+            // $('tr.hang').css('cursor', 'pointer'); // Redundant if class is in HTML
+
+            // Highlight row on hover (using the .hightlight class from your CSS)
+            $('tr.hang').hover(
+                function() {
+                    $(this).addClass('hightlight');
+                },
+                function() {
+                    $(this).removeClass('hightlight');
+                }
+            );
+
+            // Select/Deselect all checkboxes
+            $('#chonhet').on('click', function() {
+                $('.chon').prop('checked', $(this).prop('checked'));
+            });
+
+            // If all individual checkboxes are checked, check 'chonhet'
+            // If any individual checkbox is unchecked, uncheck 'chonhet'
+            $('.chon').on('click', function() {
+                if ($('.chon:checked').length === $('.chon').length) {
+                    $('#chonhet').prop('checked', true);
+                } else {
+                    $('#chonhet').prop('checked', false);
+                }
+            });
+
+            // Example of an action when a checkbox is clicked (optional)
+            $('.chon').on('change', function() {
+                var rowId = $(this).val();
+                if ($(this).is(':checked')) {
+                    console.log('Checkbox for row ' + rowId + ' is checked.');
+                    // You could add further actions here, like enabling a delete button
+                } else {
+                    console.log('Checkbox for row ' + rowId + ' is unchecked.');
+                    // Disable delete button, etc.
+                }
+            });
+
+            // Prevent form submission for demo purposes (optional)
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+                console.log('Form would be submitted now. Selected items:');
+                $('.chon:checked').each(function() {
+                    console.log('Selected ID: ' + $(this).val());
+                });
+                alert('Form submission prevented for demonstration. Check console for selected IDs.');
+            });
+        });
+    </script>
+
+</body>
+</html>

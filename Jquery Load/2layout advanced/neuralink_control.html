@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Neuralink Interface</title>
+<style>
+body{background:#000;color:#fff;font-family:Arial;margin:0;padding:0;overflow:hidden}
+.interface{display:flex;height:100vh}
+.sidebar{width:250px;background:#111;padding:20px;box-sizing:border-box}
+.main{flex:1;padding:20px;position:relative;overflow:hidden}
+.logo{color:#e82127;font-size:24px;font-weight:bold;margin-bottom:30px;letter-spacing:1px}
+.menu{list-style:none;padding:0;margin:0}
+.menu li{margin-bottom:5px}
+.menu button{width:100%;background:#222;border:none;color:#fff;padding:12px;text-align:left;cursor:pointer;border-left:3px solid transparent;transition:all 0.3s}
+.menu button:hover,.menu button.active{background:#333;border-left-color:#e82127}
+.panel{position:absolute;top:0;left:0;width:100%;height:100%;padding:20px;box-sizing:border-box;opacity:0;transition:opacity 0.5s;pointer-events:none}
+.panel.active{opacity:1;pointer-events:auto}
+.control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px;margin-top:20px}
+.control-item{background:#222;border-radius:8px;padding:15px;text-align:center;cursor:pointer;transition:all 0.3s}
+.control-item:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(232,33,39,0.2)}
+.control-icon{font-size:24px;margin-bottom:10px}
+.status{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.8);color:#0f0;padding:10px 20px;font-family:monospace;font-size:14px}
+.particles{position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1}
+.particle{position:absolute;background:#e82127;border-radius:50%;opacity:0.3}
+h2{color:#e82127;margin-top:0}
+.slider{width:100%;margin:15px 0}
+.button-row{display:flex;gap:10px;margin:15px 0}
+.action-btn{background:#e82127;color:#fff;border:none;padding:10px 15px;border-radius:5px;cursor:pointer}
+.action-btn:hover{background:#c41e21}
+.window{border:1px solid #333;border-radius:8px;padding:15px;margin-bottom:15px}
+.window-header{display:flex;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #333}
+.window-title{margin:0;font-size:16px}
+.close-btn{background:none;border:none;color:#e82127;cursor:pointer}
+iframe{width:100%;height:300px;border:none;background:#111}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="interface">
+    <div class="sidebar">
+        <div class="logo">NEURALINK OS</div>
+        <ul class="menu">
+            <li><button data-panel="system" class="active">Điều Khiển Hệ Thống</button></li>
+            <li><button data-panel="browser">Trình Duyệt</button></li>
+            <li><button data-panel="files">Quản Lý File</button></li>
+            <li><button data-panel="network">Kết Nối Mạng</button></li>
+            <li><button data-panel="tesla">Tesla Ecosystem</button></li>
+        </ul>
+    </div>
+    
+    <div class="main">
+        <div class="particles" id="particles"></div>
+        
+        <!-- Điều khiển hệ thống -->
+        <div class="panel active" id="system">
+            <h2>Điều Khiển Hệ Thống</h2>
+            <p>Điều khiển máy tính của bạn bằng giao diện não-máy Neuralink.</p>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">Hiệu Suất Hệ Thống</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <p>CPU: <span id="cpu-usage">32%</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="32">
+                    
+                    <p>RAM: <span id="ram-usage">2.4GB / 8GB</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="45">
+                    
+                    <div class="button-row">
+                        <button class="action-btn" onclick="simulateAction('optimize')">Tối Ưu Hóa</button>
+                        <button class="action-btn" onclick="simulateAction('boost')">Tăng Tốc</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-grid">
+                <div class="control-item" onclick="loadContent('trangchu.html')">
+                    <div class="control-icon">🏠</div>
+                    <div>Trang Chủ</div>
+                </div>
+                <div class="control-item" onclick="loadContent('vitinh.html')">
+                    <div class="control-icon">💻</div>
+                    <div>Vi Tính</div>
+                </div>
+                <div class="control-item" onclick="loadContent('thohay.html')">
+                    <div class="control-icon">📝</div>
+                    <div>Thơ Hay</div>
+                </div>
+                <div class="control-item" onclick="loadContent('tinxahoi.html')">
+                    <div class="control-icon">🌍</div>
+                    <div>Tin Xã Hội</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trình duyệt -->
+        <div class="panel" id="browser">
+            <h2>Trình Duyệt Neuralink</h2>
+            <p>Duyệt web bằng suy nghĩ của bạn.</p>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">Tesla Ecosystem</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <iframe src="tesla_ecosystem.html" id="browser-frame"></iframe>
+                    <div class="button-row">
+                        <button class="action-btn" onclick="loadInBrowser('trangchu.html')">Trang Chủ</button>
+                        <button class="action-btn" onclick="loadInBrowser('vitinh.html')">Vi Tính</button>
+                        <button class="action-btn" onclick="loadInBrowser('thohay.html')">Thơ Hay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quản lý file -->
+        <div class="panel" id="files">
+            <h2>Quản Lý File</h2>
+            <p>Truy cập và quản lý file bằng giao diện não-máy.</p>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">File Explorer</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <div class="control-grid">
+                        <div class="control-item" onclick="loadContent('first_principles_sub.html')">
+                            <div class="control-icon">📄</div>
+                            <div>First Principles</div>
+                        </div>
+                        <div class="control-item" onclick="loadContent('moonshot_sub.html')">
+                            <div class="control-icon">📄</div>
+                            <div>Moonshot</div>
+                        </div>
+                        <div class="control-item" onclick="loadContent('education_sub.html')">
+                            <div class="control-icon">📄</div>
+                            <div>Education</div>
+                        </div>
+                        <div class="control-item" onclick="loadContent('sports_sub.html')">
+                            <div class="control-icon">📄</div>
+                            <div>Sports</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kết nối mạng -->
+        <div class="panel" id="network">
+            <h2>Kết Nối Mạng</h2>
+            <p>Quản lý kết nối mạng của bạn.</p>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">Starlink Connection</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <p>Tốc độ tải xuống: <span id="download-speed">1.2 Gbps</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="80">
+                    
+                    <p>Tốc độ tải lên: <span id="upload-speed">300 Mbps</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="60">
+                    
+                    <p>Độ trễ: <span id="latency">12ms</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="20">
+                    
+                    <div class="button-row">
+                        <button class="action-btn" onclick="simulateAction('connect')">Kết Nối</button>
+                        <button class="action-btn" onclick="simulateAction('disconnect')">Ngắt Kết Nối</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tesla Ecosystem -->
+        <div class="panel" id="tesla">
+            <h2>Tesla Ecosystem</h2>
+            <p>Kết nối với hệ sinh thái Tesla của bạn.</p>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">Tesla Model S</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <p>Pin: <span id="battery-level">76%</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="76">
+                    
+                    <p>Phạm vi: <span id="range">420 km</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="70">
+                    
+                    <p>Nhiệt độ: <span id="temperature">22°C</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="50">
+                    
+                    <div class="button-row">
+                        <button class="action-btn" onclick="simulateAction('lock')">Khóa Xe</button>
+                        <button class="action-btn" onclick="simulateAction('climate')">Bật Điều Hòa</button>
+                        <button class="action-btn" onclick="simulateAction('summon')">Triệu Hồi</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="window">
+                <div class="window-header">
+                    <h3 class="window-title">Powerwall</h3>
+                    <button class="close-btn">×</button>
+                </div>
+                <div class="window-content">
+                    <p>Trạng thái: <span id="powerwall-status">Đang sạc</span></p>
+                    <p>Mức pin: <span id="powerwall-level">89%</span></p>
+                    <input type="range" class="slider" min="0" max="100" value="89">
+                    
+                    <div class="button-row">
+                        <button class="action-btn" onclick="simulateAction('powerwall-mode')">Chế Độ Dự Phòng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="status" id="status">Kết nối thành công. Đang đồng bộ hóa với Neuralink...</div>
+
+<script>
+$(document).ready(function() {
+    // Tạo hiệu ứng hạt
+    createParticles();
+    
+    // Xử lý chuyển tab
+    $(".menu button").click(function() {
+        // Loại bỏ active từ tất cả các nút và panel
+        $(".menu button").removeClass("active");
+        $(".panel").removeClass("active");
+        
+        // Thêm active vào nút được click
+        $(this).addClass("active");
+        
+        // Hiển thị panel tương ứng
+        var panelId = $(this).data("panel");
+        $("#" + panelId).addClass("active");
+        
+        // Cập nhật trạng thái
+        updateStatus("Đang chuyển sang module " + panelId + "...");
+    });
+    
+    // Xử lý nút đóng cửa sổ
+    $(".close-btn").click(function() {
+        $(this).closest(".window").fadeOut(300);
+        setTimeout(function() {
+            $(".window").fadeIn(300);
+        }, 1000);
+    });
+    
+    // Xử lý thanh trượt
+    $(".slider").on("input", function() {
+        var value = $(this).val();
+        var nearestText = $(this).prev().find("span");
+        
+        if (nearestText.attr("id") === "cpu-usage") {
+            nearestText.text(value + "%");
+        } else if (nearestText.attr("id") === "ram-usage") {
+            var ramGB = (value / 100 * 8).toFixed(1);
+            nearestText.text(ramGB + "GB / 8GB");
+        } else if (nearestText.attr("id") === "download-speed") {
+            var speed = (value / 100 * 2).toFixed(1);
+            nearestText.text(speed + " Gbps");
+        } else if (nearestText.attr("id") === "upload-speed") {
+            var speed = Math.round(value / 100 * 500);
+            nearestText.text(speed + " Mbps");
+        } else if (nearestText.attr("id") === "latency") {
+            var latency = Math.round(100 - value + 10);
+            nearestText.text(latency + "ms");
+        } else if (nearestText.attr("id") === "battery-level") {
+            nearestText.text(value + "%");
+        } else if (nearestText.attr("id") === "range") {
+            var range = Math.round(value / 100 * 600);
+            nearestText.text(range + " km");
+        } else if (nearestText.attr("id") === "temperature") {
+            var temp = Math.round(value / 100 * 30);
+            nearestText.text(temp + "°C");
+        } else if (nearestText.attr("id") === "powerwall-level") {
+            nearestText.text(value + "%");
+        }
+    });
+});
+
+// Tạo hiệu ứng hạt
+function createParticles() {
+    const container = document.getElementById("particles");
+    const particleCount = 30;
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+        
+        // Vị trí ngẫu nhiên
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        
+        // Kích thước ngẫu nhiên
+        const size = Math.random() * 5 + 2;
+        
+        particle.style.left = posX + "%";
+        particle.style.top = posY + "%";
+        particle.style.width = size + "px";
+        particle.style.height = size + "px";
+        
+        // Thêm animation
+        const duration = Math.random() * 30 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.animation = `float ${duration}s ${delay}s infinite alternate`;
+        
+        container.appendChild(particle);
+    }
+    
+    // Thêm animation cho hạt
+    const style = document.createElement("style");
+    style.textContent = `
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(${Math.random() * 50 - 25}px, ${Math.random() * 50 - 25}px); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Cập nhật trạng thái
+function updateStatus(message) {
+    $("#status").text(message);
+    
+    // Sau 3 giây, trở về trạng thái mặc định
+    setTimeout(function() {
+        $("#status").text("Kết nối thành công. Đang đồng bộ hóa với Neuralink...");
+    }, 3000);
+}
+
+// Mô phỏng hành động
+function simulateAction(action) {
+    switch(action) {
+        case "optimize":
+            updateStatus("Đang tối ưu hóa hệ thống...");
+            setTimeout(function() {
+                $("#cpu-usage").text("18%");
+                $(".slider").eq(0).val(18);
+            }, 1000);
+            break;
+        case "boost":
+            updateStatus("Đang tăng tốc hệ thống...");
+            break;
+        case "connect":
+            updateStatus("Đang kết nối với Starlink...");
+            break;
+        case "disconnect":
+            updateStatus("Đã ngắt kết nối Starlink.");
+            break;
+        case "lock":
+            updateStatus("Đã khóa xe Tesla Model S.");
+            break;
+        case "climate":
+            updateStatus("Đã bật điều hòa. Nhiệt độ: 22°C");
+            break;
+        case "summon":
+            updateStatus("Đang triệu hồi xe. Ước tính: 2 phút.");
+            break;
+        case "powerwall-mode":
+            updateStatus("Đã chuyển Powerwall sang chế độ dự phòng.");
+            $("#powerwall-status").text("Chế độ dự phòng");
+            break;
+    }
+}
+
+// Tải nội dung vào cửa sổ chính
+function loadContent(url) {
+    updateStatus("Đang tải " + url + "...");
+    
+    // Tạo cửa sổ mới
+    const windowHtml = `
+    <div class="window" style="display:none;">
+        <div class="window-header">
+            <h3 class="window-title">${url}</h3>
+            <button class="close-btn">×</button>
+        </div>
+        <div class="window-content">
+            <iframe src="${url}"></iframe>
+        </div>
+    </div>`;
+    
+    // Thêm cửa sổ vào panel hiện tại
+    $(".panel.active").append(windowHtml);
+    
+    // Hiển thị cửa sổ với hiệu ứng
+    $(".window:last").fadeIn(300);
+    
+    // Xử lý nút đóng
+    $(".close-btn").last().click(function() {
+        $(this).closest(".window").fadeOut(300, function() {
+            $(this).remove();
+        });
+    });
+}
+
+// Tải nội dung vào trình duyệt
+function loadInBrowser(url) {
+    updateStatus("Đang tải " + url + " trong trình duyệt...");
+    $("#browser-frame").attr("src", url);
+}
+</script>
+</body>
+</html>

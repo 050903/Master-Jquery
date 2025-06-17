@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuery Table Interaction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hightlight {
+            color: #900;
+            background-color: #9C0;
+        }
+        .hang {
+            cursor: pointer;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        table thead tr:nth-child(2) th {
+            color: black;
+            border: 1px solid #ddd;
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .action-links a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .top-controls td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #f0f0f0;
+            vertical-align: middle;
+        }
+        .top-controls input[type="button"] {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .top-controls input[type="button"]:hover {
+            background-color: #d0d0d0;
+        }
+        #xoathet {
+            border: 1px solid red;
+        }
+        .top-controls select {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        .top-controls a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .top-controls a:hover {
+            text-decoration: underline;
+        }
+
+        table th:nth-child(1), table td:nth-child(1) { width: 30px; text-align: center; }
+        table th:nth-child(2), table td:nth-child(2) { width: 50px; }
+        table th:nth-child(3), table td:nth-child(3) { width: 120px; }
+        table th:nth-child(4), table td:nth-child(4) { width: 80px; }
+        table th:nth-child(5), table td:nth-child(5) { width: 60px; }
+        table th:nth-child(6), table td:nth-child(6) { width: 100px; }
+        table th:nth-child(7), table td:nth-child(7) { width: 120px; text-align: center; }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <h1>Thao tác JQuery với the &lt;input name="ten"&gt;</h1>
+    <h2>- Table như hình H02</h2>
+
+    <form id="form1" method="post" action="loaitin_them.php">
+        <table id="dstin" align="center" border="1" cellpadding="4" cellspacing="0">
+            
+            <thead>
+                <tr class="top-controls">
+                    <td colspan="4" align="left"> <input name="xoathet" value="Xoá" type="button" id="xoathet">
+                        <input name="chinhthet" value="Chỉnh" type="button" id="chinhthet">
+                    </td>
+                    <td colspan="3" align="right"> <a href="loaitin_them.php">Thêm loại tin</a>
+                        <select name="cbthemnhieu" id="cbthemnhieu">
+                            <option value="1">1</option>
+                            <option selected="selected" value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <input name="btnthemnhieu" id="btnthemnhieu" value="Thêm" type="button">
+                    </td>
+                </tr>
+                <tr class="hang">
+                    <th align="left">
+                        <input id="chonhet" type="checkbox"/>
+                    </th>
+                    <th>idLT</th>
+                    <th>Tên loại tin</th>
+                    <th>Ẩn hiện</th>
+                    <th>Thứ tự</th>
+                    <th>Thể loại</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="data-rows">
+                <!-- Data will be loaded dynamically -->
+            </tbody>
+        </table>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            // Load data from JSON file
+            loadData();
+
+            function loadData() {
+                $.getJSON('data.json?' + new Date().getTime(), function(data) {
+                    var rows = '';
+                    $.each(data.loaitin, function(index, item) {
+                        rows += '<tr class="hang">';
+                        rows += '<td><input name="chon" id="chon' + item.idLT + '" type="checkbox" value="' + item.idLT + '" class="chon"/></td>';
+                        rows += '<td>' + item.idLT + '</td>';
+                        rows += '<td>' + item.Ten + '</td>';
+                        rows += '<td width="100">' + (item.AnHien ? 'Đang hiện' : 'Đang ẩn') + '</td>';
+                        rows += '<td>' + item.ThuTu + '</td>';
+                        rows += '<td>' + item.TenTL + '</td>';
+                        rows += '<td align="center" width="100" class="action-links">';
+                        rows += '<a href="loaitin_chinh.php?idLT=' + item.idLT + '">Chỉnh</a> | ';
+                        rows += '<a href="loaitin_xoa.php?idLT=' + item.idLT + '" onclick="return confirm(\'Xoá hả?\');">Xoá</a>';
+                        rows += '</td></tr>';
+                    });
+                    $('#data-rows').html(rows);
+                    
+                    // Reattach event handlers after loading data
+                    attachEventHandlers();
+                }).fail(function() {
+                    alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+                });
+            }
+
+            function attachEventHandlers() {
+                // Highlight row on hover
+                $('tr.hang').hover(
+                    function() {
+                        $(this).addClass('hightlight');
+                    },
+                    function() {
+                        $(this).removeClass('hightlight');
+                    }
+                );
+
+                // Update "Check All" checkbox based on individual checkboxes
+                $('input[name=chon]').on('click', function() {
+                    if ($('input[name=chon]:checked').length === $('input[name=chon]').length) {
+                        $('#chonhet').prop('checked', true);
+                    } else {
+                        $('#chonhet').prop('checked', false);
+                    }
+                });
+            }
+
+            // Select/Deselect all checkboxes
+            $('#chonhet').click(function(){
+                var status = this.checked;
+                $('input[name=chon]').each(function(){
+                    this.checked = status;
+                });
+            });
+
+            // Edit multiple items
+            $('#chinhthet').click(function() {
+                var listid = "";
+                $('input[name=chon]:checked').each(function() {
+                    listid += ',' + $(this).val();
+                });
+
+                if (listid.length > 0) {
+                    listid = listid.substring(1);
+                    window.location = "chinh.php?listid=" + listid;
+                } else {
+                    alert('Vui lòng chọn ít nhất một mục để chỉnh sửa.');
+                }
+            });
+
+            // Delete multiple items
+            $('#xoathet').click(function() {
+                var selectedCount = $('input[name=chon]:checked').length;
+                if (selectedCount === 0) {
+                    alert('Vui lòng chọn ít nhất một mục để xoá.');
+                    return false;
+                }
+
+                if (!confirm('Bạn có chắc chắn muốn xoá ' + selectedCount + ' mục đã chọn?')) {
+                    return false;
+                }
+
+                var listid = "";
+                $('input[name=chon]:checked').each(function() {
+                    listid += ',' + $(this).val();
+                });
+
+                listid = listid.substring(1);
+                window.location = "xoa.php?listid=" + listid;
+            });
+
+            // Add multiple items
+            $('#btnthemnhieu').click(function() {
+                var numToAdd = $('#cbthemnhieu').val();
+                window.location = "loaitin_themnhieu.php?num=" + numToAdd;
+            });
+        });
+    </script>
+
+</body>
+</html>

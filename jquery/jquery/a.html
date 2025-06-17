@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Thao tác Jquery với CSS</title>
+<style>
+    /* B2: Định dạng CSS */
+    #menu {
+        width: 180px; 
+        background-color: #CCC6; 
+        margin: 0 auto; 
+    }
+
+    .theloai {
+        background-color: #F63; 
+        color: #FFFFFF;
+        display: block; 
+        padding-top: 5px; 
+        padding-bottom: 5px; 
+        font-weight: bold; 
+    }
+
+    .loaitin a {
+        color: #990000; 
+        padding-top: 3px; 
+        padding-bottom: 3px; 
+        padding-left: 15px; 
+        display: block; 
+        border-bottom: solid 1px #CF0; 
+        text-decoration: none; 
+        font-weight: bold; 
+    }
+
+    /* Định dạng khi di chuột qua các liên kết tin tức */
+    .loaitin a:hover {
+        color: #FF3300; 
+    }
+</style>
+</head>
+<body>
+
+    <div id="menu">
+        <div class="theloai">Tin xã hội</div>
+        <div class="loaitin">
+            <a href="#">Thể thao</a>
+            <a href="#">Du lịch</a>
+            <a href="#">Xã hội</a>
+            <a href="#">Sức khỏe</a>
+            <a href="#">Âm nhạc</a>
+        </div>
+
+        <div class="theloai">Thế giới web</div>
+        <div class="loaitin">
+            <a href="#">Tools</a>
+            <a href="#">Links</a>
+            <a href="#">Template</a>
+            <a href="#">Document</a>
+        </div>
+
+        <div class="theloai">Nghệ thuật sống</div>
+        <div class="loaitin">
+            <a href="#">Sống đẹp</a>
+        </div>
+
+        <div class="theloai">Thư giãn</div>
+        <div class="loaitin">
+            <a href="#">Thơ hay</a>
+            <a href="#">Đố vui</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Neural Poetry</title>
+    <style>
+        .poetry-container {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 600% 600%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            font-family: 'Georgia', serif;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .neural-title {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .poem {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+        .poem:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .poem-title {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #fdbb2d;
+        }
+        .poem-content {
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .poem-author {
+            text-align: right;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .neural-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+        }
+        .neural-badge:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: #fdbb2d;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .brain-waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="white" fill-opacity="1" d="M0,128L48,144C96,160,192,192,288,186.7C384,181,480,139,576,138.7C672,139,768,181,864,186.7C960,192,1056,160,1152,144C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: 1440px 320px;
+            animation: wave 20s linear infinite;
+        }
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1440px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="poetry-container">
+        <div class="neural-badge">Neuralink Poetry</div>
+        
+        <h2 class="neural-title">Thơ Hay - Kết Nối Não Bộ</h2>
+        
+        <div class="poem">
+            <h3 class="poem-title">Giấc Mơ Sao Hỏa</h3>
+            <div class="poem-content">
+                Trên bầu trời đỏ thẫm, những giấc mơ bay cao,<br>
+                Nơi con người chưa từng đặt chân, tôi thấy ngôi nhà mới.<br>
+                Không phải là ranh giới không gian ngăn cách chúng ta,<br>
+                Mà chính là giới hạn trong tâm trí mỗi người.<br><br>
+                
+                Hành tinh đỏ gọi tên, như tiếng vọng từ tương lai,<br>
+                Loài người đa hành tinh, không còn là khoa học viễn tưởng.<br>
+                Khi những tên lửa vươn cao, phá vỡ xiềng xích trọng lực,<br>
+                Chúng ta trở thành những vì sao, tỏa sáng khắp vũ trụ bao la.
+            </div>
+            <div class="poem-author">— Neuralink AI + Tâm trí con người</div>
+        </div>
+        
+        <div class="poem">
+            <h3 class="poem-title">Điện Tử Và Linh Hồn</h3>
+            <div class="poem-content">
+                Khi silicon gặp gỡ ý thức,<br>
+                Khi mạch điện hòa vào dòng máu đỏ.<br>
+                Ranh giới mờ nhạt giữa người và máy,<br>
+                Linh hồn và điện tử, ai là ai?<br><br>
+                
+                Trong thế giới mới này, chúng ta là những nhà thơ số,<br>
+                Viết nên những vần thơ bằng sóng não và thuật toán.<br>
+                Không còn bút mực, không còn giấy trắng,<br>
+                Chỉ còn ý nghĩ thuần khiết, từ tâm trí đến vũ trụ.
+            </div>
+            <div class="poem-author">— Sáng tác bằng giao diện não-máy</div>
+        </div>
+        
+        <div class="poem">
+            <h3 class="poem-title">Vượt Qua Giới Hạn</h3>
+            <div class="poem-content">
+                Đừng hỏi tại sao không thể,<br>
+                Hãy hỏi tại sao không phải là bạn?<br>
+                Khi những giới hạn chỉ tồn tại trong tâm trí,<br>
+                Và những giấc mơ lớn tạo nên lịch sử.<br><br>
+                
+                Những người điên rồ nghĩ rằng họ có thể thay đổi thế giới,<br>
+                Là những người thực sự làm được điều đó.<br>
+                Vì họ nhìn thấy những gì người khác không thấy,<br>
+                Và dám bước đi nơi chưa ai từng đặt chân.
+            </div>
+            <div class="poem-author">— Truyền cảm hứng từ tư duy đột phá</div>
+        </div>
+        
+        <div class="brain-waves">
+            <div class="wave"></div>
+        </div>
+    </div>
+</body>
+</html>

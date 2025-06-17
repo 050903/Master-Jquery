@@ -1,0 +1,59 @@
+{
+    "loaitin": [
+        {
+            "idLT": 1,
+            "Ten": "New Topic 1",
+            "AnHien": 1,
+            "ThuTu": 1,
+            "idTL": 1,
+            "TenTL": "Technology",
+            "Tags": [],
+            "Analytics": {
+                "Views": 199,
+                "Engagement": 0.52,
+                "Growth": 1
+            }
+        },
+        {
+            "idLT": 2,
+            "Ten": "New Topic 2",
+            "AnHien": 1,
+            "ThuTu": 2,
+            "idTL": 1,
+            "TenTL": "Technology",
+            "Tags": [],
+            "Analytics": {
+                "Views": 161,
+                "Engagement": 0.8,
+                "Growth": -2
+            }
+        }
+    ],
+    "categories": [
+        {
+            "idTL": 1,
+            "TenTL": "Technology",
+            "Icon": "microchip"
+        },
+        {
+            "idTL": 2,
+            "TenTL": "Science",
+            "Icon": "flask"
+        },
+        {
+            "idTL": 3,
+            "TenTL": "Automotive",
+            "Icon": "car"
+        },
+        {
+            "idTL": 4,
+            "TenTL": "Finance",
+            "Icon": "chart-line"
+        },
+        {
+            "idTL": 5,
+            "TenTL": "Education",
+            "Icon": "graduation-cap"
+        }
+    ]
+}

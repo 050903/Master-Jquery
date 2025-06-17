@@ -1,0 +1,5 @@
+Đây là một file văn bản thuần túy.
+Nó chứa một số dòng văn bản đơn giản.
+Hàm jQuery .load() sẽ chèn nội dung của file này trực tiếp vào phần tử đích mà không cần xử lý thêm HTML.
+
+Bạn có thể sử dụng phương pháp này để tải các file cấu hình, nhật ký, hoặc bất kỳ dữ liệu văn bản nào khác.

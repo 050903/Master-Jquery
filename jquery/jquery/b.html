@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Thao tác Jquery với CSS (Câu b)</title>
+<style>
+    body {
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-start; 
+        min-height: 100vh;
+        margin: 0; 
+    }
+
+    #menu {
+        width: 180px;
+        background-color: #CCC6;
+        margin: 0 auto; /* Căn giữa menu */
+    }
+
+    .theloai {
+        background-color: #F63;
+        color: #FFFFFF;
+        display: block;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-weight: bold;
+        cursor: pointer; /* Thêm con trỏ dạng ngón tay để người dùng biết đây là phần có thể click */
+    }
+
+    .loaitin a {
+        /* Các thuộc tính CSS ban đầu cho .loaitin a sẽ được đặt ở đây */
+        /* Chúng ta sẽ GHI ĐÈ chúng bằng JQuery ban đầu */
+        color: #990000; /* Màu mặc định từ CSS gốc */
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 15px;
+        display: block;
+        border-bottom: solid 1px #CF0;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .loaitin a:hover {
+        color: #FF3300;
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        // Yêu cầu của câu b: Thay đổi font chữ, màu chữ ban đầu (khi tải trang)
+        // Áp dụng cho tất cả các thẻ a bên trong class "loaitin"
+        $(".loaitin a").css({
+            "color": "blue",        // Thay đổi màu chữ thành xanh dương
+            "font-style": "italic"  // Đặt kiểu chữ nghiêng
+        });
+
+        // Yêu cầu của câu b: Thay đổi kích thước chữ ban đầu (khi tải trang)
+        // Áp dụng cho tất cả các thẻ a bên trong class "loaitin"
+        $(".loaitin a").css("font-size", "200%");
+
+
+        // Yêu cầu của câu b: Khi click vào theloai kích thước font chữ loaitin tăng lên
+        $(".theloai").click(function(){
+            // Tìm nhóm .loaitin liền kề với phần tử .theloai vừa được click
+            var $targetLoaitin = $(this).next(".loaitin");
+
+            // Lấy kích thước font hiện tại của các thẻ <a> bên trong nhóm .loaitin đó
+            var currentFontSize = $targetLoaitin.find("a").css("font-size");
+            var sizeInPx = parseFloat(currentFontSize);
+
+            // Tăng kích thước thêm 2px
+            sizeInPx += 2;
+
+            // Áp dụng kích thước font mới trở lại cho các thẻ <a> bên trong nhóm .loaitin đó
+            $targetLoaitin.find("a").css("font-size", sizeInPx + "px");
+        });
+
+        // Bỏ qua tất cả các phần liên quan đến show(), hide(), slideToggle() của câu c
+        // Menu sẽ luôn hiển thị.
+    });
+</script>
+</head>
+<body>
+
+    <div id="menu">
+        <div class="theloai">Tin xã hội</div>
+        <div class="loaitin">
+            <a href="#">Thể thao</a>
+            <a href="#">Du lịch</a>
+            <a href="#">Xã hội</a>
+            <a href="#">Sức khỏe</a>
+            <a href="#">Âm nhạc</a>
+        </div>
+
+        <div class="theloai">Thế giới web</div>
+        <div class="loaitin">
+            <a href="#">Tools</a>
+            <a href="#">Links</a>
+            <a href="#">Template</a>
+            <a href="#">Document</a>
+        </div>
+
+        <div class="theloai">Nghệ thuật sống</div>
+        <div class="loaitin">
+            <a href="#">Sống đẹp</a>
+        </div>
+
+        <div class="theloai">Thư giãn</div>
+        <div class="loaitin">
+            <a href="#">Thơ hay</a>
+            <a href="#">Đố vui</a>
+        </div>
+    </div>
+
+</body>
+</html>

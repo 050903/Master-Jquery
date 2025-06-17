@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sports Revolution</title>
+    <style>
+        .sports-container {
+            background: #000;
+            color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .sports-container:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(76, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            z-index: 0;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        .futuristic-title {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #ff4e50, #f9d423);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+        .sport-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s;
+        }
+        .sport-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .sport-title {
+            color: #f9d423;
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+        .tech-tag {
+            display: inline-block;
+            background: rgba(76, 0, 255, 0.3);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4e50, #f9d423);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sports-container">
+        <div class="content">
+            <h2 class="futuristic-title">Thể Thao Tương Lai</h2>
+            
+            <p>Cách mạng hóa thể thao với công nghệ đột phá và tư duy không giới hạn:</p>
+            
+            <div class="sport-card">
+                <h3 class="sport-title">Mars Olympics 2040</h3>
+                <p>Giải đấu thể thao đầu tiên được tổ chức trên sao Hỏa, với các môn thể thao được thiết kế đặc biệt cho môi trường trọng lực thấp.</p>
+                <div>
+                    <span class="tech-tag">Trọng lực nhân tạo</span>
+                    <span class="tech-tag">Công nghệ sinh học</span>
+                    <span class="tech-tag">Vật liệu nano</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:35%"></div>
+                </div>
+                <small>Tiến độ phát triển: 35%</small>
+            </div>
+            
+            <div class="sport-card">
+                <h3 class="sport-title">Neuralink eSports</h3>
+                <p>Điều khiển trực tiếp bằng sóng não, tạo ra một thế hệ thể thao điện tử mới nơi người chơi kết nối trực tiếp với môi trường ảo.</p>
+                <div>
+                    <span class="tech-tag">Giao diện não-máy</span>
+                    <span class="tech-tag">Thực tế ảo</span>
+                    <span class="tech-tag">AI</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:65%"></div>
+                </div>
+                <small>Tiến độ phát triển: 65%</small>
+            </div>
+            
+            <div class="sport-card">
+                <h3 class="sport-title">Hyperloop Racing League</h3>
+                <p>Giải đua tốc độ cao trong các ống chân không, với vận tốc lên đến 1,200 km/h, kết hợp kỹ năng lái xe và thiết kế kỹ thuật.</p>
+                <div>
+                    <span class="tech-tag">Động cơ điện</span>
+                    <span class="tech-tag">Chân không</span>
+                    <span class="tech-tag">Khí động học</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:50%"></div>
+                </div>
+                <small>Tiến độ phát triển: 50%</small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

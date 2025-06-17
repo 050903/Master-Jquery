@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Layout AJAX - Bài 2</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4; 
+            text-align: center; 
+        }
+        #container {
+            width: 90%; 
+            max-width: 960px;
+            margin: 20px auto; 
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #ffffff; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 500px; 
+            border-radius: 8px;
+            overflow: hidden; 
+            gap: 5px; 
+        }
+        #header {
+            background-color: #0d1e4c;
+            height: 100px; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .main-content {
+            display: flex; 
+            flex: 1; 
+            flex-wrap: wrap; 
+            gap: 5px; 
+            background-color: #ffffff;
+        }
+        #left {
+            width: 200px; 
+            background-color: #27375e;
+            padding: 10px 0;
+            box-sizing: border-box; 
+        }
+        #left a {
+            display: block; 
+            padding: 10px 15px;
+            color: rgb(174, 255, 0);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            text-align: left; 
+            box-shadow: inset 0 0 0 1px #d3a102; 
+            background-color: #27375e; 
+        }
+        #left a:first-child {
+            box-shadow: inset 0 0 0 1px #d3a102; 
+        }
+        #left a:last-child {
+            margin-bottom: 0; 
+        }
+        #left a:hover, #left a.active {
+            background-color: #3b4d63; 
+        }
+        #right {
+            flex-grow: 1; 
+            background-color: #d3d3d3; 
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: left; 
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column; 
+                gap: 10; 
+            }
+            #left {
+                width: 100%; 
+                border-right: none;
+            }
+            #left a {
+                box-shadow: inset 0 0 0 1px #d3a102;
+                margin-bottom: 1px;
+            }
+            #container {
+                gap: 100px; 
+            }
+        }
+    </style>
+    <!-- Nhúng thư viện jQuery từ CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#left a").click(function(e) {
+                e.preventDefault(); 
+
+                var url = $(this).attr("href");
+
+                $("#left a").removeClass("active");
+                $(this).addClass("active");
+
+                $("#right").html("Đang tải nội dung...").load(url); 
+
+            });
+
+            $("#left a:first").trigger("click");
+        });
+    </script>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            HEADER
+        </div>
+        <div class="main-content">
+            <div id="left">
+                <!-- Các liên kết điều hướng -->
+                <a href="trangchu.html">Trang chủ</a>
+                <a href="tinxahoi.html">Tin xã hội</a>
+                <a href="tingiaoduc.html">Giáo dục</a>
+                <a href="thethao.html">Thể thao</a>
+                <a href="thohay.html">Thơ hay</a>
+                <a href="vitinh.html">Vi tính</a>
+            </div>
+            <div id="right">
+                <!-- Nội dung sẽ được tải vào đây -->
+                <p>Nội dung của trang sẽ hiển thị ở đây.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

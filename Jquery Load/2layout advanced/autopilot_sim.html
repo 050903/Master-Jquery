@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tesla Autopilot Simulation</title>
+<style>
+body{margin:0;padding:0;overflow:hidden;background:#000;font-family:Arial,sans-serif}
+.container{position:relative;width:100vw;height:100vh}
+.road{position:absolute;width:100%;height:100%;background:#222;overflow:hidden}
+.lane-divider{position:absolute;top:0;left:50%;height:100%;width:10px;background:linear-gradient(transparent,#fff 20%,#fff 80%,transparent);transform:translateX(-50%)}
+.lane-marking{position:absolute;width:100px;height:20px;background:#fff;left:calc(25% - 50px);transform:translateY(-50%)}
+.lane-marking.right{left:calc(75% - 50px)}
+.car{position:absolute;bottom:100px;left:calc(25% - 30px);width:60px;height:100px;background:#e82127;border-radius:10px;transition:left 0.5s ease}
+.car.autopilot{left:calc(50% - 30px)}
+.car:before{content:"";position:absolute;top:15px;left:10px;right:10px;height:20px;background:#333;border-radius:5px}
+.car:after{content:"TESLA";position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#fff;font-size:10px;font-weight:bold}
+.controls{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10}
+.btn{background:#e82127;color:#fff;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:bold;transition:all 0.3s}
+.btn:hover{background:#c41e21;transform:scale(1.05)}
+.btn.active{background:#00cc00}
+.obstacle{position:absolute;width:50px;height:80px;background:#555;border-radius:5px;transform:translateX(-50%)}
+.dashboard{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:15px;border-radius:10px;color:#fff;display:flex;gap:20px;z-index:10}
+.metric{text-align:center}
+.metric-value{font-size:24px;font-weight:bold;margin-bottom:5px}
+.metric-label{font-size:12px;opacity:0.7}
+.alert{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(232,33,39,0.9);color:#fff;padding:20px;border-radius:10px;font-weight:bold;display:none;z-index:20}
+.stars{position:absolute;width:100%;height:100%;z-index:-1}
+.star{position:absolute;background:#fff;border-radius:50%}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="stars" id="stars"></div>
+  <div class="road">
+    <div class="lane-divider"></div>
+    <div id="lane-markings"></div>
+    <div id="obstacles"></div>
+    <div class="car" id="car"></div>
+  </div>
+  
+  <div class="dashboard">
+    <div class="metric">
+      <div class="metric-value" id="speed">0</div>
+      <div class="metric-label">KM/H</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value" id="battery">100</div>
+      <div class="metric-label">BATTERY %</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value" id="distance">0</div>
+      <div class="metric-label">KM</div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <button class="btn" id="start-btn">START</button>
+    <button class="btn" id="autopilot-btn">AUTOPILOT</button>
+    <button class="btn" id="lane-change-btn">CHANGE LANE</button>
+  </div>
+  
+  <div class="alert" id="alert">AUTOPILOT AVOIDED COLLISION</div>
+</div>
+
+<script>
+// Khởi tạo biến
+let isRunning = false;
+let isAutopilot = false;
+let currentLane = 'left'; // 'left' hoặc 'right'
+let speed = 0;
+let battery = 100;
+let distance = 0;
+let animationId;
+let obstacles = [];
+
+// Lấy các phần tử DOM
+const car = document.getElementById('car');
+const startBtn = document.getElementById('start-btn');
+const autopilotBtn = document.getElementById('autopilot-btn');
+const laneChangeBtn = document.getElementById('lane-change-btn');
+const speedDisplay = document.getElementById('speed');
+const batteryDisplay = document.getElementById('battery');
+const distanceDisplay = document.getElementById('distance');
+const laneMarkings = document.getElementById('lane-markings');
+const obstaclesContainer = document.getElementById('obstacles');
+const alert = document.getElementById('alert');
+
+// Tạo sao trên nền
+function createStars() {
+  const stars = document.getElementById('stars');
+  const count = 100;
+  
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    // Vị trí ngẫu nhiên
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    
+    // Kích thước ngẫu nhiên
+    const size = Math.random() * 3 + 1;
+    
+    star.style.left = x + '%';
+    star.style.top = y + '%';
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.opacity = Math.random() * 0.8 + 0.2;
+    
+    stars.appendChild(star);
+  }
+}
+
+// Tạo vạch kẻ đường
+function createLaneMarkings() {
+  for (let i = 0; i < 10; i++) {
+    // Vạch bên trái
+    const leftMarking = document.createElement('div');
+    leftMarking.classList.add('lane-marking');
+    leftMarking.style.top = (i * 200) + 'px';
+    laneMarkings.appendChild(leftMarking);
+    
+    // Vạch bên phải
+    const rightMarking = document.createElement('div');
+    rightMarking.classList.add('lane-marking', 'right');
+    rightMarking.style.top = (i * 200) + 'px';
+    laneMarkings.appendChild(rightMarking);
+  }
+}
+
+// Di chuyển vạch kẻ đường
+function moveLaneMarkings() {
+  const markings = document.querySelectorAll('.lane-marking');
+  markings.forEach(marking => {
+    let top = parseInt(marking.style.top);
+    top += speed / 10;
+    
+    if (top > window.innerHeight) {
+      top = -20;
+    }
+    
+    marking.style.top = top + 'px';
+  });
+}
+
+// Tạo chướng ngại vật
+function createObstacle() {
+  if (!isRunning) return;
+  
+  const obstacle = document.createElement('div');
+  obstacle.classList.add('obstacle');
+  
+  // Ngẫu nhiên làn đường
+  const lane = Math.random() > 0.5 ? 'left' : 'right';
+  const left = lane === 'left' ? '25%' : '75%';
+  
+  obstacle.style.left = left;
+  obstacle.style.top = '-100px';
+  
+  obstaclesContainer.appendChild(obstacle);
+  obstacles.push({ element: obstacle, lane });
+  
+  // Tạo chướng ngại vật mới sau 3-8 giây
+  setTimeout(createObstacle, Math.random() * 5000 + 3000);
+}
+
+// Di chuyển chướng ngại vật
+function moveObstacles() {
+  obstacles.forEach((obstacle, index) => {
+    const element = obstacle.element;
+    let top = parseInt(element.style.top) || -100;
+    top += speed / 10;
+    
+    element.style.top = top + 'px';
+    
+    // Kiểm tra va chạm
+    if (top > window.innerHeight - 200 && top < window.innerHeight - 100) {
+      if (obstacle.lane === currentLane) {
+        // Va chạm xảy ra
+        if (isAutopilot) {
+          // Autopilot tránh va chạm
+          changeLane();
+          showAlert();
+        } else {
+          // Người lái không tránh được
+          stopSimulation();
+          alert.textContent = "COLLISION DETECTED";
+          alert.style.display = "block";
+        }
+      }
+    }
+    
+    // Xóa chướng ngại vật khi ra khỏi màn hình
+    if (top > window.innerHeight) {
+      element.remove();
+      obstacles.splice(index, 1);
+    }
+  });
+}
+
+// Hiển thị cảnh báo
+function showAlert() {
+  alert.style.display = "block";
+  setTimeout(() => {
+    alert.style.display = "none";
+  }, 2000);
+}
+
+// Đổi làn đường
+function changeLane() {
+  if (currentLane === 'left') {
+    currentLane = 'right';
+    car.style.left = 'calc(75% - 30px)';
+  } else {
+    currentLane = 'left';
+    car.style.left = 'calc(25% - 30px)';
+  }
+}
+
+// Bật/tắt autopilot
+function toggleAutopilot() {
+  isAutopilot = !isAutopilot;
+  
+  if (isAutopilot) {
+    autopilotBtn.classList.add('active');
+    car.classList.add('autopilot');
+    currentLane = 'center'; // Làn giữa khi bật autopilot
+  } else {
+    autopilotBtn.classList.remove('active');
+    car.classList.remove('autopilot');
+    currentLane = 'left'; // Trở về làn trái khi tắt autopilot
+    car.style.left = 'calc(25% - 30px)';
+  }
+}
+
+// Cập nhật thông số
+function updateMetrics() {
+  if (!isRunning) return;
+  
+  // Tăng tốc độ dần dần
+  if (speed < 120) {
+    speed += 1;
+  }
+  
+  // Giảm pin dần dần
+  if (battery > 0) {
+    battery -= 0.05;
+  }
+  
+  // Tăng quãng đường
+  distance += speed / 3600;
+  
+  // Cập nhật hiển thị
+  speedDisplay.textContent = Math.round(speed);
+  batteryDisplay.textContent = Math.round(battery);
+  distanceDisplay.textContent = distance.toFixed(1);
+}
+
+// Vòng lặp chính
+function gameLoop() {
+  if (!isRunning) return;
+  
+  updateMetrics();
+  moveLaneMarkings();
+  moveObstacles();
+  
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+// Bắt đầu mô phỏng
+function startSimulation() {
+  if (isRunning) return;
+  
+  isRunning = true;
+  startBtn.textContent = "STOP";
+  startBtn.classList.add('active');
+  
+  // Bắt đầu vòng lặp
+  gameLoop();
+  
+  // Tạo chướng ngại vật đầu tiên
+  setTimeout(createObstacle, 2000);
+}
+
+// Dừng mô phỏng
+function stopSimulation() {
+  isRunning = false;
+  startBtn.textContent = "START";
+  startBtn.classList.remove('active');
+  
+  // Dừng vòng lặp
+  cancelAnimationFrame(animationId);
+  
+  // Đặt lại thông số
+  speed = 0;
+  speedDisplay.textContent = "0";
+}
+
+// Xử lý sự kiện
+startBtn.addEventListener('click', () => {
+  if (isRunning) {
+    stopSimulation();
+  } else {
+    startSimulation();
+  }
+});
+
+autopilotBtn.addEventListener('click', toggleAutopilot);
+laneChangeBtn.addEventListener('click', () => {
+  if (!isAutopilot) {
+    changeLane();
+  }
+});
+
+// Khởi tạo
+createStars();
+createLaneMarkings();
+</script>
+</body>
+</html>

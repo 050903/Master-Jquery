@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuery Table Interaction - Part B</title>
+
+    <style>
+        .hightlight {
+            color: #900; 
+            background-color: #9C0; 
+        }
+        .hang {
+            cursor: pointer;
+        }
+
+        table {
+            width: 80%; 
+            border-collapse: collapse;
+            margin: 20px auto; 
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background-color: #9ACD32; 
+            color: #900;              
+            border: 1px solid #900;   
+        }
+
+        tr.hang th {
+            background-color: #9ACD32;
+            color: #900;             
+            border: 1px solid #900;   
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .action-links a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #007bff; 
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .check-all-label {
+            color: red;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+        }
+        .check-row-label {
+            color: red;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px; 
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <h1>Thao tác JQuery với the &lt;input name="ten"&gt;</h1>
+    <h2>- Table như hình H02</h2>
+
+    <form id="form1" method="post" action="loaitin_them.php">
+        <table id="dstin" align="center" border="1" cellpadding="4" cellspacing="0" width="600">
+            <thead>
+                <tr class="hang">
+                    <th align="left">
+                        <label class="check-all-label">
+                            <input id="chonhet" type="checkbox"/>
+                            Check All
+                        </label>
+                    </th>
+                    <th>idLT</th>
+                    <th>Tên loại tin</th>
+                    <th>Ẩn hiện</th>
+                    <th>Thứ tự</th>
+                    <th>Thể loại</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hang">
+                    <td>
+                        <label class="check-row-label">
+                            <input name="chon" id="chon3" type="checkbox" value="3" class="chon"/>
+                            Check ⇨
+                        </label>
+                    </td>
+                    <td>3</td>
+                    <td>Du lịch</td>
+                    <td width="100">Đang hiện</td>
+                    <td>2</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=3">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=3" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+                <tr class="hang">
+                    <td>
+                        <label class="check-row-label">
+                            <input name="chon" id="chon9" type="checkbox" value="9" class="chon"/>
+                            Check ⇨
+                        </label>
+                    </td>
+                    <td>9</td>
+                    <td>Xã hội</td>
+                    <td width="100">Đang hiện</td>
+                    <td>3</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=9">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=9" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </form>
+
+    <script>
+        $(document).ready(function() {
+            // Part 'a': Change background and text color on hover
+            $('tr.hang').hover(
+                function() {
+                    $(this).addClass('hightlight');
+                },
+                function() {
+                    $(this).removeClass('hightlight');
+                }
+            );
+
+            // Part 'b': "Check All" functionality exactly as shown in image_04b589.png
+            $('#chonhet').click(function(){
+                var status = this.checked; // Get the checked status of the 'chonhet' checkbox
+                $('input[name=chon]').each(function(){
+                    this.checked = status; // Set individual checkbox status
+                });
+            });
+
+            // Optional: Add the inverse logic for when individual checkboxes are clicked
+            // This ensures the "Check All" checkbox updates if individual ones are changed manually.
+            $('input[name=chon]').on('click', function() {
+                if ($('input[name=chon]:checked').length === $('input[name=chon]').length) {
+                    $('#chonhet').prop('checked', true);
+                } else {
+                    $('#chonhet').prop('checked', false);
+                }
+            });
+
+            // Prevent form submission for demonstration purposes (remove for actual backend interaction)
+            $('form').on('submit', function(e) {
+                e.preventDefault(); // Stop the form from submitting normally
+                console.log('Form submission prevented for demo.');
+                var selectedIds = [];
+                $('input[name=chon]:checked').each(function() {
+                    selectedIds.push($(this).val());
+                });
+                if (selectedIds.length > 0) {
+                    alert('Selected IDs: ' + selectedIds.join(', '));
+                    console.log('Selected IDs:', selectedIds);
+                } else {
+                    alert('No items selected.');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

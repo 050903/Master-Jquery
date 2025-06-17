@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tesla Ecosystem - Innovation Hub</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000; 
+            text-align: center; 
+            color: #fff;
+        }
+        #container {
+            width: 90%; 
+            max-width: 960px;
+            margin: 20px auto; 
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(232,33,39,0.2);
+            background-color: #111; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 500px; 
+            border-radius: 12px;
+            overflow: hidden; 
+            gap: 1px; 
+        }
+        #header {
+            background-color: #000;
+            height: 100px; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        #header:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e82127, transparent);
+        }
+        .tesla-logo {
+            color: #e82127;
+            letter-spacing: 2px;
+        }
+        .main-content {
+            display: flex; 
+            flex: 1; 
+            flex-wrap: wrap; 
+            gap: 1px; 
+            background-color: #222;
+        }
+        #left {
+            width: 200px; 
+            background-color: #111;
+            padding: 10px 0;
+            box-sizing: border-box; 
+        }
+        #left a {
+            display: block; 
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: left; 
+            border-left: 3px solid transparent;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        #left a:hover, #left a.active {
+            background-color: rgba(232,33,39,0.1);
+            border-left-color: #e82127;
+            color: #e82127;
+        }
+        #right {
+            flex-grow: 1; 
+            background-color: #1a1a1a; 
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: left; 
+        }
+        .submenu {
+            padding-left: 15px;
+            display: none;
+        }
+        .submenu a {
+            font-size: 0.9em;
+            padding: 10px 15px !important;
+        }
+        .has-submenu.active + .submenu {
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column; 
+            }
+            #left {
+                width: 100%; 
+            }
+            #left a {
+                padding: 12px 15px;
+                border-left-width: 5px;
+            }
+        }
+        
+        /* Loading animation */
+        .loading-indicator {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+        .loading-indicator div {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #e82127;
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+        .loading-indicator div:nth-child(1) {
+            left: 8px;
+            animation: loading1 0.6s infinite;
+        }
+        .loading-indicator div:nth-child(2) {
+            left: 8px;
+            animation: loading2 0.6s infinite;
+        }
+        .loading-indicator div:nth-child(3) {
+            left: 32px;
+            animation: loading2 0.6s infinite;
+        }
+        .loading-indicator div:nth-child(4) {
+            left: 56px;
+            animation: loading3 0.6s infinite;
+        }
+        @keyframes loading1 {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        @keyframes loading2 {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 0); }
+        }
+        @keyframes loading3 {
+            0% { transform: scale(1); }
+            100% { transform: scale(0); }
+        }
+    </style>
+    <!-- Nhúng thư viện jQuery từ CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#left a").click(function(e) {
+                e.preventDefault(); 
+
+                var url = $(this).attr("href");
+                
+                // Nếu là menu chính
+                if(!$(this).parent().hasClass("submenu")) {
+                    $(".has-submenu").removeClass("active");
+                    $(this).addClass("active");
+                    
+                    if($(this).hasClass("has-submenu")) {
+                        return;
+                    }
+                }
+                
+                $("#left a").removeClass("active");
+                $(this).addClass("active");
+
+                $("#right").html('<div style="text-align:center; padding:40px;"><div class="loading-indicator"><div></div><div></div><div></div><div></div></div><p>Accelerating Innovation...</p></div>').load(url); 
+            });
+
+            // Xử lý menu có submenu
+            $(".has-submenu").click(function() {
+                $(this).toggleClass("active");
+            });
+
+            $("#left a:first").trigger("click");
+        });
+    </script>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <span class="tesla-logo">TESLA</span> INNOVATION HUB
+        </div>
+        <div class="main-content">
+            <div id="left">
+                <!-- Các liên kết điều hướng -->
+                <a href="trangchu.html" class="has-submenu">First Principles</a>
+                <div class="submenu">
+                    <a href="first_principles_sub.html">Core Thinking</a>
+                </div>
+                
+                <a href="tinxahoi.html" class="has-submenu">Moonshot Projects</a>
+                <div class="submenu">
+                    <a href="moonshot_sub.html">Project Details</a>
+                </div>
+                
+                <a href="tingiaoduc.html" class="has-submenu">Education X</a>
+                <div class="submenu">
+                    <a href="education_sub.html">Learning Revolution</a>
+                </div>
+                
+                <a href="thethao.html" class="has-submenu">Future Sports</a>
+                <div class="submenu">
+                    <a href="sports_sub.html">Mars Olympics</a>
+                </div>
+                
+                <a href="thohay.html" class="has-submenu">Neural Poetry</a>
+                <div class="submenu">
+                    <a href="poetry_sub.html">Brain Interface Art</a>
+                </div>
+                
+                <a href="vitinh.html" class="has-submenu">Quantum Computing</a>
+                <div class="submenu">
+                    <a href="quantum_sub.html">Q-Processors</a>
+                </div>
+                
+                <a href="hamload.html" class="has-submenu">Tesla News</a>
+                <div class="submenu">
+                    <a href="tesla_news_sub.html">Latest Updates</a>
+                </div>
+                
+                <a href="tesla_ecosystem.html" class="has-submenu">Full Ecosystem</a>
+                <div class="submenu">
+                    <a href="ecosystem_sub.html">Connected Systems</a>
+                    <a href="spacex_sub.html">SpaceX Integration</a>
+                    <a href="boring_sub.html">Boring Transport</a>
+                </div>
+                
+                <a href="neuralink_gateway.html" class="has-submenu" style="color:#e82127;font-weight:bold">Neuralink Control</a>
+                <div class="submenu">
+                    <a href="neuralink_gateway.html" style="color:#e82127">Brain Interface</a>
+                </div>
+                
+                <a href="simulation_hub.html" class="has-submenu" style="color:#00a2ff;font-weight:bold">Simulations</a>
+                <div class="submenu">
+                    <a href="autopilot_sim.html" style="color:#00a2ff">Autopilot</a>
+                    <a href="solar_sim.html" style="color:#00a2ff">Solar Energy</a>
+                </div>
+            </div>
+            <div id="right">
+                <!-- Nội dung sẽ được tải vào đây -->
+                <p>Accelerating the world's transition to sustainable energy.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

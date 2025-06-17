@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Education Reimagined</title>
+    <style>
+        .education-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            font-family: 'Arial', sans-serif;
+        }
+        .section-title {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        .innovation-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #3498db;
+        }
+        .innovation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .innovation-card h3 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        .stat-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            width: 30%;
+            min-width: 200px;
+            margin-bottom: 15px;
+        }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="education-container">
+        <h2 class="section-title">Giáo Dục Tương Lai</h2>
+        
+        <p>Tái định nghĩa giáo dục để phát triển những nhà đổi mới của thế kỷ 21:</p>
+        
+        <div class="stat-container">
+            <div class="stat-box">
+                <div class="stat-number">5x</div>
+                <div class="stat-label">Tăng hiệu quả học tập</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">70%</div>
+                <div class="stat-label">Giảm chi phí giáo dục</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Tiếp cận toàn cầu</div>
+            </div>
+        </div>
+        
+        <div class="innovation-card">
+            <h3>Học tập dựa trên dự án thực tế</h3>
+            <p>"Tôi nghĩ rằng trường học nên dạy giải quyết vấn đề, không phải ghi nhớ sự kiện. Chúng ta cần đào tạo những người giải quyết vấn đề, không phải những cỗ máy trả lời câu hỏi."</p>
+            <p>Mô hình giáo dục mới tập trung vào việc giải quyết các vấn đề thực tế của thế giới, không phải học thuộc lòng.</p>
+        </div>
+        
+        <div class="innovation-card">
+            <h3>AI cá nhân hóa trải nghiệm học tập</h3>
+            <p>Mỗi học sinh có một trợ lý AI riêng, điều chỉnh nội dung và tốc độ học tập phù hợp với điểm mạnh, điểm yếu và phong cách học tập cá nhân.</p>
+        </div>
+        
+        <div class="innovation-card">
+            <h3>Mạng lưới học tập toàn cầu</h3>
+            <p>Kết nối học sinh với các chuyên gia hàng đầu thế giới và các nguồn tài nguyên không giới hạn thông qua internet vệ tinh tốc độ cao.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            cursor: pointer;
+        }
+        #demo-area {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .highlight {
+            background-color: #ffffa0;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 8px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #list {
+            padding-left: 20px;
+        }
+        #list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        p {
+            cursor: pointer;
+        }
+        .rotate {
+            transform: rotate(360deg);
+            transition: transform 1s;
+        }
+        #demo-image {
+            transition: all 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <h1>jQuery Demo</h1>
+    
+    <div id="demo-area">
+        <div class="image-container" style="text-align: center; margin-bottom: 20px;">
+            <img id="demo-image" src="image.jpg" alt="Demo Image" style="max-width: 100%; border-radius: 8px;">
+        </div>
+        <p>This is a paragraph that can be manipulated with jQuery.</p>
+        <ul id="list">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+        
+        <div class="controls">
+            <button id="add-item">Add Item</button>
+            <button id="remove-item">Remove Last Item</button>
+            <button id="toggle-highlight">Toggle Highlight</button>
+            <button id="fade-toggle">Fade Toggle</button>
+            <button id="hide-toggle">Hide/Show Paragraph</button>
+            <button id="rotate-image">Xoay Ảnh</button>
+        </div>
+    </div>
+
+    <!-- Load jQuery -->
+    <script src="jquery-3.7.1.min.js"></script>
+    
+    <!-- Custom jQuery code -->
+    <script>
+        $(document).ready(function() {
+            // Mouse hover event on title to hide image
+            $("h1").mouseenter(function() {
+                $("#demo-image").fadeOut(500);
+            });
+            
+            // Mouse leave event on title to show image again
+            $("h1").mouseleave(function() {
+                $("#demo-image").fadeIn(500);
+            });
+            
+            // Click on title to increase image size by 2 units
+            $("h1").click(function() {
+                const currentWidth = $("#demo-image").width();
+                $("#demo-image").animate({
+                    width: currentWidth + 2
+                }, 500);
+                alert("Đã tăng kích thước ảnh thêm 2px!");
+            });
+            // Add item button
+            $("#add-item").click(function() {
+                const itemCount = $("#list li").length + 1;
+                $("#list").append(`<li>Item ${itemCount}</li>`);
+                alert("Đã thêm một mục mới!");
+            });
+            
+            // Remove last item button
+            $("#remove-item").click(function() {
+                $("#list li:last-child").remove();
+                alert("Đã xóa mục cuối cùng!");
+            });
+            
+            // Toggle highlight on paragraph
+            $("#toggle-highlight").click(function() {
+                $("p").toggleClass("highlight");
+                alert("Đã chuyển đổi hiệu ứng highlight!");
+            });
+            
+            // Fade toggle the list
+            $("#fade-toggle").click(function() {
+                $("#list").fadeToggle(400);
+                alert("Đã chuyển đổi hiệu ứng fade!");
+            });
+            
+            // Hide/Show paragraph with animation duration
+            $("#hide-toggle").click(function() {
+                $("p").toggle(1000);
+                alert("Đã ẩn/hiện đoạn văn bản với hiệu ứng kéo dài 1 giây!");
+            });
+            
+            // Click on paragraph to toggle image visibility
+            $("p").click(function() {
+                $("#demo-image").fadeToggle(500);
+                alert("Đã ẩn/hiện ảnh khi chạm vào đoạn văn bản!");
+            });
+            
+            // Click on list items to change their color and rotate image
+            $("#list").on("click", "li", function() {
+                $(this).css("color", "#3498db");
+                $("#demo-image").toggleClass("rotate");
+                alert("Đã thay đổi màu chữ và xoay ảnh!");
+            });
+            
+            // Rotate image button
+            $("#rotate-image").click(function() {
+                $("#demo-image").toggleClass("rotate");
+                alert("Đã xoay ảnh!");
+            });
+        });
+    </script>
+</body>
+</html>

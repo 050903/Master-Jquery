@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tesla Ecosystem</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .tesla-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tesla-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .tesla-logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: #e82127;
+        }
+        .tesla-nav {
+            display: flex;
+            gap: 15px;
+        }
+        .tesla-button {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-radius: 20px;
+        }
+        .tesla-button:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        .tesla-button.active {
+            background-color: #e82127;
+            color: white;
+        }
+        #content-area {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Xử lý sự kiện click cho các nút
+            $(".tesla-button").click(function() {
+                // Loại bỏ lớp active từ tất cả các nút
+                $(".tesla-button").removeClass("active");
+                
+                // Thêm lớp active vào nút được click
+                $(this).addClass("active");
+                
+                // Lấy URL từ thuộc tính data-url
+                var url = $(this).data("url");
+                
+                // Hiển thị thông báo đang tải
+                $("#content-area").html('<div class="loading">Đang tải dữ liệu...</div>');
+                
+                // Tải nội dung từ URL vào khu vực nội dung
+                $("#content-area").load(url);
+                
+                return false;
+            });
+            
+            // Kích hoạt nút đầu tiên khi trang tải xong
+            $(".tesla-button:first").trigger("click");
+        });
+    </script>
+</head>
+<body>
+    <div class="tesla-container">
+        <div class="tesla-header">
+            <div class="tesla-logo">TESLA</div>
+            <div class="tesla-nav">
+                <button class="tesla-button" data-url="txn.html">Tin Mới</button>
+                <button class="tesla-button" data-url="tnb.html">Tin Nổi Bật</button>
+            </div>
+        </div>
+        
+        <div id="content-area">
+            <!-- Nội dung sẽ được tải vào đây -->
+        </div>
+    </div>
+</body>
+</html>

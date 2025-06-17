@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Quantum Computing Future</title>
+    <style>
+        .tech-container {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            padding: 30px;
+            border-radius: 15px;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .tech-container:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 200, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 80% 30%, rgba(0, 100, 255, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 40% 70%, rgba(255, 0, 200, 0.03) 0%, transparent 20%);
+            z-index: 0;
+        }
+        .quantum-title {
+            font-size: 2.5em;
+            color: #00ffcc;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .tech-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(0, 255, 200, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .tech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 200, 0.1);
+            border-color: rgba(0, 255, 200, 0.5);
+        }
+        .tech-card:before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 200, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        .tech-card:hover:before {
+            animation: shine 1.5s forwards;
+            opacity: 1;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        .tech-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: #00ffcc;
+        }
+        .tech-name {
+            font-size: 1.5em;
+            color: #00ffcc;
+            margin-bottom: 10px;
+        }
+        .tech-desc {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .tech-timeline {
+            font-size: 0.9em;
+            color: #888;
+            display: flex;
+            align-items: center;
+        }
+        .timeline-bar {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin: 0 10px;
+            position: relative;
+        }
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #00ccff);
+            border-radius: 2px;
+        }
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: rgba(0, 255, 200, 0.5);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-container">
+        <div class="particles" id="particles"></div>
+        
+        <h2 class="quantum-title">Vi Tính Lượng Tử - Tương Lai Đột Phá</h2>
+        
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-icon">⚛️</div>
+                <h3 class="tech-name">Máy Tính Lượng Tử</h3>
+                <p class="tech-desc">Vượt qua giới hạn của điện toán truyền thống với khả năng xử lý song song ở quy mô chưa từng có. Giải quyết trong vài giây những bài toán mà siêu máy tính hiện đại phải mất hàng nghìn năm.</p>
+                <div class="tech-timeline">
+                    <span>Hiện tại</span>
+                    <div class="timeline-bar">
+                        <div class="timeline-progress" style="width:40%"></div>
+                    </div>
+                    <span>2030</span>
+                </div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon">🧠</div>
+                <h3 class="tech-name">Giao Diện Não-Máy</h3>
+                <p class="tech-desc">Kết nối trực tiếp giữa não bộ con người và máy tính, cho phép điều khiển thiết bị bằng ý nghĩ và mở ra kỷ nguyên mới trong giao tiếp, y tế và giải trí.</p>
+                <div class="tech-timeline">
+                    <span>Hiện tại</span>
+                    <div class="timeline-bar">
+                        <div class="timeline-progress" style="width:25%"></div>
+                    </div>
+                    <span>2035</span>
+                </div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon">🔒</div>
+                <h3 class="tech-name">Mật Mã Lượng Tử</h3>
+                <p class="tech-desc">Hệ thống bảo mật không thể phá vỡ dựa trên nguyên lý vật lý lượng tử, tạo ra một internet mới an toàn tuyệt đối và bảo vệ dữ liệu khỏi mọi mối đe dọa.</p>
+                <div class="tech-timeline">
+                    <span>Hiện tại</span>
+                    <div class="timeline-bar">
+                        <div class="timeline-progress" style="width:35%"></div>
+                    </div>
+                    <span>2028</span>
+                </div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon">🌐</div>
+                <h3 class="tech-name">Internet Lượng Tử</h3>
+                <p class="tech-desc">Mạng lưới toàn cầu với tốc độ truyền dữ liệu tức thời, không độ trễ, dựa trên hiện tượng vướng víu lượng tử, xóa bỏ mọi khoảng cách vật lý.</p>
+                <div class="tech-timeline">
+                    <span>Hiện tại</span>
+                    <div class="timeline-bar">
+                        <div class="timeline-progress" style="width:15%"></div>
+                    </div>
+                    <span>2040</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tạo hiệu ứng hạt lượng tử
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Vị trí ngẫu nhiên
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Kích thước ngẫu nhiên
+                const size = Math.random() * 3 + 1;
+                
+                // Độ sáng ngẫu nhiên
+                const opacity = Math.random() * 0.5 + 0.3;
+                
+                particle.style.left = posX + '%';
+                particle.style.top = posY + '%';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.opacity = opacity;
+                
+                // Thêm animation
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                
+                particle.style.animation = `float ${duration}s ${delay}s infinite alternate`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        });
+        
+        // Thêm animation cho hạt
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translate(0, 0); }
+                100% { transform: translate(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

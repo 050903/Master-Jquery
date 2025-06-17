@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JQuery Table Interaction</title>
+
+    <style>
+        /* CSS from your image for highlighting rows */
+        .hightlight {
+            color: #900; /* Dark red text */
+            background-color: #9C0; /* Greenish background */
+        }
+        /* CSS from your image for pointer cursor on rows */
+        .hang {
+            cursor: pointer;
+        }
+
+        /* Basic table styling for better readability (optional, but recommended) */
+        table {
+            width: 80%; /* Adjusted width for better viewing */
+            border-collapse: collapse;
+            margin: 20px auto; /* Center the table */
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        /* Style for action links */
+        .action-links a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #007bff; /* Blue color for links */
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        /* Style for the main heading */
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <h1>Thao tác JQuery với the &lt;input name="ten"&gt;</h1>
+    <h2>- Table như hình H02</h2>
+
+    <form id="form1" method="post" action="loaitin_them.php">
+        <table id="dstin" align="center" border="1" cellpadding="4" cellspacing="0" width="600">
+            <thead>
+                <tr class="hang">
+                    <th align="left"><input id="chonhet" type="checkbox"/></th>
+                    <th>idLT</th>
+                    <th>Tên loại tin</th>
+                    <th>Ẩn hiện</th>
+                    <th>Thứ tự</th>
+                    <th>Thể loại</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hang">
+                    <td><input name="chon[]" id="chon3" type="checkbox" value="3" class="chon"/></td>
+                    <td>3</td>
+                    <td>Du lịch</td>
+                    <td width="100">Đang hiện</td>
+                    <td>2</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=3">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=3" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+                <tr class="hang">
+                    <td><input name="chon[]" id="chon9" type="checkbox" value="9" class="chon"/></td>
+                    <td>9</td>
+                    <td>Xã hội</td>
+                    <td width="100">Đang hiện</td>
+                    <td>3</td>
+                    <td>Tin xã hội</td>
+                    <td align="center" width="100" class="action-links">
+                        <a href="loaitin_chinh.php?idLT=9">Chỉnh</a> |
+                        <a href="loaitin_xoa.php?idLT=9" onclick="return confirm('Xoá hả?');">Xoá</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </form>
+
+    <script>
+        $(document).ready(function() {
+            // Part 'a': Change background and text color on hover
+            // Using .hover() is a shorthand for mouseover and mouseout
+            $('tr.hang').hover(
+                function() {
+                    // Mouse enters the row
+                    $(this).addClass('hightlight');
+                },
+                function() {
+                    // Mouse leaves the row
+                    $(this).removeClass('hightlight');
+                }
+            );
+
+            // Functionality for "Select All" checkbox
+            $('#chonhet').on('click', function() {
+                // Set all individual checkboxes to the same checked state as "chonhet"
+                $('.chon').prop('checked', $(this).prop('checked'));
+            });
+
+            // Update "Select All" checkbox based on individual checkboxes
+            $('.chon').on('click', function() {
+                // If the number of checked individual checkboxes equals the total number of individual checkboxes
+                if ($('.chon:checked').length === $('.chon').length) {
+                    $('#chonhet').prop('checked', true); // Check "chonhet"
+                } else {
+                    $('#chonhet').prop('checked', false); // Uncheck "chonhet"
+                }
+            });
+
+            // Example of an action when an individual checkbox state changes
+            $('.chon').on('change', function() {
+                var rowId = $(this).val();
+                if ($(this).is(':checked')) {
+                    console.log('Checkbox for idLT ' + rowId + ' is checked.');
+                    // You can add more complex logic here, e.g., enable/disable a delete button
+                } else {
+                    console.log('Checkbox for idLT ' + rowId + ' is unchecked.');
+                }
+            });
+
+            // Prevent form submission for demonstration purposes (remove for actual backend interaction)
+            $('form').on('submit', function(e) {
+                e.preventDefault(); // Stop the form from submitting normally
+                console.log('Form submission prevented for demo.');
+                var selectedIds = [];
+                $('.chon:checked').each(function() {
+                    selectedIds.push($(this).val());
+                });
+                if (selectedIds.length > 0) {
+                    alert('Selected IDs: ' + selectedIds.join(', '));
+                    console.log('Selected IDs:', selectedIds);
+                } else {
+                    alert('No items selected.');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

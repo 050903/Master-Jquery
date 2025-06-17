@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Thao tác Jquery với CSS</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    #menu {
+        width: 180px;
+        background-color: #CCC6;
+        margin: 0 auto; /* Căn giữa menu */
+    }
+
+    .theloai {
+        background-color: #F63;
+        color: #FFFFFF;
+        display: block;
+        padding: 5px 10px;
+        font-weight: bold;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .theloai::after {
+        content: "+";
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        transition: transform 0.3s;
+    }
+    
+    .theloai.active::after {
+        content: "-";
+    }
+
+    .loaitin a {
+        color: #990000;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-left: 15px;
+        display: block;
+        border-bottom: solid 1px #CF0;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .loaitin a:hover {
+        color: #FF3300;
+    }
+
+    #mode-buttons {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #mode-buttons button {
+        padding: 8px 15px;
+        margin: 0 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    #mode-buttons button.active-mode {
+        background-color: #0056b3;
+        border: 1px solid #004085;
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        let currentMode = 'open1'; // Default mode
+
+        // --- Function to apply the 'open1' mode initial state (matching image_79a89e.png) ---
+        function applyOpen1Mode() {
+            $(".loaitin").hide(); // Hide all .loaitin containers
+            $(".loaitin a").hide(); // Hide all individual links
+
+            // Show only "Sống đẹp" and its parent container/category
+            let $songDepLink = $(".loaitin a:contains('Sống đẹp')");
+            if ($songDepLink.length) {
+                $songDepLink.show(); // Show only the "Sống đẹp" link
+                $songDepLink.closest(".loaitin").show(); // Show its parent .loaitin container
+                $songDepLink.closest(".loaitin").prev(".theloai").addClass("active"); // Add active class to its .theloai
+            }
+
+            // Reset background colors for all theloai to default
+            $(".theloai").css("background-color", "#F63");
+            // Apply special background to "Nghệ thuật sống" as it's the active one
+            $(".theloai:contains('Nghệ thuật sống')").css("background-color", "#FF9900");
+
+            // For other loaitin, just ensure their title is visible (which is the default for .theloai)
+            // No need to show first link for others initially in this specific mode if only 'Sống đẹp' is highlighted
+        }
+
+        // --- Function to apply the 'openall' mode initial state (matching image_7a055d.png) ---
+        function applyOpenAllMode() {
+            $(".loaitin").hide(); // Hide all .loaitin containers
+            $(".loaitin a").hide(); // Hide all individual links
+
+            // Show the first category ("Tin xã hội")
+            $(".loaitin:first").show();
+            $(".theloai:first").addClass("active");
+            $(".loaitin:first a").show(); // Show all links in the first category
+            
+            // Reset background colors for all theloai
+            $(".theloai").css("background-color", "#F63");
+            // Apply special background to the first category (Tin xã hội)
+            $(".theloai:first").css("background-color", "#FF9900");
+        }
+
+        // --- Initial setup based on default mode ---
+        applyOpen1Mode(); // Apply 'open1' mode initially
+        $("#open1-btn").addClass("active-mode"); // Highlight the active mode button
+
+        // --- Event Listeners for Mode Buttons ---
+        $("#open1-btn").click(function() {
+            currentMode = 'open1';
+            $("#mode-buttons button").removeClass("active-mode");
+            $(this).addClass("active-mode");
+            applyOpen1Mode(); // Reapply initial state for 'open1'
+        });
+
+        $("#openall-btn").click(function() {
+            currentMode = 'openall';
+            $("#mode-buttons button").removeClass("active-mode");
+            $(this).addClass("active-mode");
+            applyOpenAllMode(); // Reapply initial state for 'openall'
+        });
+        
+        // Thêm màu đặc biệt cho mục đầu tiên và cuối cùng của mỗi loại tin (always apply)
+        $(".loaitin").each(function(){
+            $(this).find("a").first().css("color", "#0066cc");
+            $(this).find("a").last().css("color", "#cc0000");
+        });
+        
+        // Lọc các liên kết có chứa chữ "Thể thao" và thêm style (always apply)
+        $(".loaitin a").filter(function() {
+            return $(this).text().indexOf("Thể thao") > -1;
+        }).css("font-weight", "bold").css("color", "green");
+        
+        // Áp dụng style cho tất cả các liên kết trừ những liên kết có chữ "Document" (always apply)
+        $(".loaitin a").not(":contains('Document')").css("text-transform", "uppercase");
+
+        // --- Click event for .theloai (main categories) ---
+        $(".theloai").click(function(){
+            let $currentTheLoai = $(this);
+            let $currentLoaitin = $(this).next(".loaitin");
+            let $currentLinks = $currentLoaitin.find("a");
+
+            if (currentMode === 'open1') {
+                // Logic for "Mở 1" (Show specific item, then expand all, then back to specific)
+                // First, reset all other categories to just their titles (no expanded links)
+                $(".theloai").removeClass("active");
+                $(".loaitin").hide();
+                $(".loaitin a").hide();
+
+                // Special handling for the "Sống đẹp" link when it's not the active category
+                let $initialSongDepLink = $(".loaitin a:contains('Sống đẹp')");
+                $initialSongDepLink.show();
+                $initialSongDepLink.closest(".loaitin").show();
+
+
+                // If the clicked category is the "Nghệ thuật sống" category AND it's already active (expanded)
+                if ($currentTheLoai.is($(".theloai:contains('Nghệ thuật sống')")) && $currentTheLoai.hasClass("active") && $currentLinks.filter(":visible").length === $currentLinks.length) {
+                    // Collapse "Nghệ thuật sống" back to just "Sống đẹp"
+                    $currentLinks.not($initialSongDepLink).slideUp(300); // Hide all but "Sống đẹp"
+                    $currentTheLoai.removeClass("active");
+                } else if ($currentTheLoai.hasClass("active")) {
+                     // If any other category is clicked and it's active, collapse it
+                     $currentLoaitin.slideUp(500, function() {
+                         $currentLinks.hide(); // Hide all links within it
+                     });
+                     $currentTheLoai.removeClass("active");
+                }
+                else {
+                    // Expand: make the current category active and show all its links
+                    $currentTheLoai.addClass("active");
+                    $currentLoaitin.slideDown(500, function() {
+                        $currentLinks.slideDown(300); // Show all links
+                    });
+                     // Ensure "Nghệ thuật sống" loses its active class if another is clicked
+                     if (!$currentTheLoai.is($(".theloai:contains('Nghệ thuật sống')"))) {
+                        $(".theloai:contains('Nghệ thuật sống')").removeClass("active");
+                     }
+                }
+            } else if (currentMode === 'openall') {
+                // Logic for "Mở 4" (Accordion behavior: Expand all, collapse all)
+                if ($currentTheLoai.hasClass("active")) {
+                    // If active, collapse it
+                    $currentLoaitin.slideUp(500);
+                    $currentTheLoai.removeClass("active");
+                } else {
+                    // If not active, collapse all others and expand this one
+                    $(".theloai").removeClass("active");
+                    $(".loaitin").slideUp(500); // Hide all others
+
+                    $currentTheLoai.addClass("active");
+                    $currentLoaitin.slideDown(500);
+                }
+                 // Reset background colors for all theloai
+                $(".theloai").css("background-color", "#F63");
+                // Apply special background to the first category (Tin xã hội) if it's open
+                if ($(".theloai:first").hasClass("active")) {
+                    $(".theloai:first").css("background-color", "#FF9900");
+                }
+            }
+            
+            // Reapply first/last link colors (they might be affected by hide/show)
+            $(".loaitin").each(function(){
+                $(this).find("a").first().css("color", "#0066cc");
+                $(this).find("a").last().css("color", "#cc0000");
+            });
+        });
+    });
+</script>
+</head>
+<body>
+    <div id="mode-buttons">
+        <button id="open1-btn">Mở 1</button>
+        <button id="openall-btn">Mở 4</button>
+    </div>
+
+    <div id="menu">
+        <div class="theloai">Tin xã hội</div>
+        <div class="loaitin">
+            <a href="#">Thể thao</a>
+            <a href="#">Du lịch</a>
+            <a href="#">Xã hội</a>
+            <a href="#">Sức khỏe</a>
+            <a href="#">Âm nhạc</a>
+        </div>
+
+        <div class="theloai">Thế giới web</div>
+        <div class="loaitin">
+            <a href="#">Tools</a>
+            <a href="#">Links</a>
+            <a href="#">Template</a>
+            <a href="#">Document</a>
+        </div>
+
+        <div class="theloai">Nghệ thuật sống</div>
+        <div class="loaitin">
+            <a href="#">Sống đẹp</a>
+        </div>
+
+        <div class="theloai">Thư giãn</div>
+        <div class="loaitin">
+            <a href="#">Thơ hay</a>
+            <a href="#">Đố vui</a>
+        </div>
+    </div>
+
+</body>
+</html>

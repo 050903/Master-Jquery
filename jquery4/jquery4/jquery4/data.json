@@ -1,0 +1,36 @@
+{
+    "loaitin": [
+        {
+            "idLT": 9,
+            "Ten": "X\u00e3 h\u1ed9i",
+            "AnHien": 1,
+            "ThuTu": 1,
+            "idTL": 1,
+            "TenTL": "Tin x\u00e3 h\u1ed9i"
+        },
+        {
+            "idLT": 10,
+            "Ten": "Lo\u1ea1i tin m\u1edbi 1",
+            "AnHien": 1,
+            "ThuTu": 10,
+            "idTL": 1,
+            "TenTL": "Tin x\u00e3 h\u1ed9i"
+        },
+        {
+            "idLT": 11,
+            "Ten": "Lo\u1ea1i tin m\u1edbi 2",
+            "AnHien": 1,
+            "ThuTu": 11,
+            "idTL": 1,
+            "TenTL": "Tin x\u00e3 h\u1ed9i"
+        },
+        {
+            "idLT": 12,
+            "Ten": "Lo\u1ea1i tin m\u1edbi 1",
+            "AnHien": 1,
+            "ThuTu": 12,
+            "idTL": 1,
+            "TenTL": "Tin x\u00e3 h\u1ed9i"
+        }
+    ]
+}

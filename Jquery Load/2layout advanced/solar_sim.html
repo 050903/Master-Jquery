@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tesla Solar Simulation</title>
+<style>
+body{margin:0;padding:0;background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
+.container{position:relative;width:100vw;height:100vh;display:flex;flex-direction:column}
+.sky{position:relative;flex:1;background:linear-gradient(to bottom,#0a2e38,#000);overflow:hidden}
+.ground{height:30vh;background:#0a0a0a;position:relative;overflow:hidden}
+.sun{position:absolute;width:80px;height:80px;background:#ff9500;border-radius:50%;box-shadow:0 0 60px #ff9500;transition:all 0.5s ease}
+.cloud{position:absolute;background:rgba(255,255,255,0.2);border-radius:50px;transition:all 0.5s ease}
+.house{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:300px;height:150px;background:#222;border-radius:5px 5px 0 0}
+.roof{position:absolute;top:-30px;left:0;width:100%;height:30px;background:#333;clip-path:polygon(0 100%,50% 0,100% 100%)}
+.solar-panel{position:absolute;top:-25px;width:40px;height:60px;background:#156082;transform:skewX(-30deg);transition:all 0.5s ease}
+.solar-panel:nth-child(1){left:60px}
+.solar-panel:nth-child(2){left:110px}
+.solar-panel:nth-child(3){left:160px}
+.solar-panel:nth-child(4){left:210px}
+.solar-panel.active{background:#00a2ff;box-shadow:0 0 10px #00a2ff}
+.window{position:absolute;width:40px;height:60px;background:#333;border:2px solid #444;top:50px}
+.window:nth-child(5){left:50px}
+.window:nth-child(6){right:50px}
+.door{position:absolute;width:60px;height:100px;background:#444;bottom:0;left:50%;transform:translateX(-50%)}
+.battery{position:absolute;width:60px;height:100px;background:#333;bottom:20px;right:20px;border-radius:5px;overflow:hidden}
+.battery-level{position:absolute;bottom:0;width:100%;background:#00cc00;transition:height 0.5s ease}
+.battery:after{content:"POWERWALL";position:absolute;top:5px;left:0;right:0;text-align:center;font-size:8px;color:#fff}
+.controls{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10}
+.btn{background:#e82127;color:#fff;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:bold;transition:all 0.3s}
+.btn:hover{background:#c41e21;transform:scale(1.05)}
+.btn.active{background:#00cc00}
+.dashboard{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:15px;border-radius:10px;color:#fff;display:flex;gap:20px;z-index:10}
+.metric{text-align:center}
+.metric-value{font-size:24px;font-weight:bold;margin-bottom:5px}
+.metric-label{font-size:12px;opacity:0.7}
+.power-line{position:absolute;stroke:#00a2ff;stroke-width:2;stroke-dasharray:5;opacity:0;transition:opacity 0.5s ease}
+.stars{position:absolute;width:100%;height:100%;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="sky" id="sky">
+    <div class="stars" id="stars"></div>
+    <div class="sun" id="sun"></div>
+    <svg width="100%" height="100%" style="position:absolute;top:0;left:0;z-index:5">
+      <line class="power-line" id="solar-to-house" x1="150" y1="100" x2="150" y2="200"></line>
+      <line class="power-line" id="house-to-battery" x1="150" y1="200" x2="280" y2="250"></line>
+      <line class="power-line" id="battery-to-house" x1="280" y1="250" x2="150" y2="200"></line>
+    </svg>
+  </div>
+  
+  <div class="ground">
+    <div class="house">
+      <div class="roof"></div>
+      <div class="solar-panel" id="panel1"></div>
+      <div class="solar-panel" id="panel2"></div>
+      <div class="solar-panel" id="panel3"></div>
+      <div class="solar-panel" id="panel4"></div>
+      <div class="window"></div>
+      <div class="window"></div>
+      <div class="door"></div>
+    </div>
+    
+    <div class="battery">
+      <div class="battery-level" id="battery-level" style="height:50%"></div>
+    </div>
+  </div>
+  
+  <div class="dashboard">
+    <div class="metric">
+      <div class="metric-value" id="solar-output">0</div>
+      <div class="metric-label">kW SOLAR</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value" id="battery-percent">50</div>
+      <div class="metric-label">BATTERY %</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value" id="house-usage">2.1</div>
+      <div class="metric-label">kW USAGE</div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <button class="btn" id="day-btn">DAY</button>
+    <button class="btn" id="cloud-btn">CLOUDS</button>
+    <button class="btn" id="usage-btn">HIGH USAGE</button>
+  </div>
+</div>
+
+<script>
+// Khởi tạo biến
+let isDay = false;
+let isCloudy = false;
+let isHighUsage = false;
+let solarOutput = 0;
+let batteryPercent = 50;
+let houseUsage = 2.1;
+let animationId;
+let clouds = [];
+
+// Lấy các phần tử DOM
+const sun = document.getElementById('sun');
+const sky = document.getElementById('sky');
+const dayBtn = document.getElementById('day-btn');
+const cloudBtn = document.getElementById('cloud-btn');
+const usageBtn = document.getElementById('usage-btn');
+const solarOutputDisplay = document.getElementById('solar-output');
+const batteryPercentDisplay = document.getElementById('battery-percent');
+const houseUsageDisplay = document.getElementById('house-usage');
+const batteryLevel = document.getElementById('battery-level');
+const solarPanels = document.querySelectorAll('.solar-panel');
+const solarToHouse = document.getElementById('solar-to-house');
+const houseToBattery = document.getElementById('house-to-battery');
+const batteryToHouse = document.getElementById('battery-to-house');
+
+// Tạo sao trên nền
+function createStars() {
+  const stars = document.getElementById('stars');
+  const count = 100;
+  
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    
+    // Vị trí ngẫu nhiên
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    
+    // Kích thước ngẫu nhiên
+    const size = Math.random() * 3 + 1;
+    
+    star.style.left = x + '%';
+    star.style.top = y + '%';
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.opacity = Math.random() * 0.8 + 0.2;
+    
+    stars.appendChild(star);
+  }
+}
+
+// Tạo mây
+function createCloud() {
+  if (!isCloudy) return;
+  
+  const cloud = document.createElement('div');
+  cloud.classList.add('cloud');
+  
+  // Kích thước ngẫu nhiên
+  const width = Math.random() * 150 + 100;
+  const height = width * 0.6;
+  
+  cloud.style.width = width + 'px';
+  cloud.style.height = height + 'px';
+  
+  // Vị trí ban đầu (bên ngoài màn hình)
+  cloud.style.left = '-' + width + 'px';
+  cloud.style.top = Math.random() * 30 + 10 + '%';
+  
+  sky.appendChild(cloud);
+  clouds.push(cloud);
+  
+  // Tạo mây mới sau 5-10 giây
+  setTimeout(createCloud, Math.random() * 5000 + 5000);
+}
+
+// Di chuyển mây
+function moveClouds() {
+  clouds.forEach((cloud, index) => {
+    const left = parseInt(cloud.style.left);
+    const width = parseInt(cloud.style.width);
+    
+    // Di chuyển mây sang phải
+    cloud.style.left = (left + 0.2) + 'px';
+    
+    // Kiểm tra xem mây có che mặt trời không
+    const cloudRect = cloud.getBoundingClientRect();
+    const sunRect = sun.getBoundingClientRect();
+    
+    if (
+      cloudRect.left < sunRect.right &&
+      cloudRect.right > sunRect.left &&
+      cloudRect.top < sunRect.bottom &&
+      cloudRect.bottom > sunRect.top
+    ) {
+      // Mây che mặt trời, giảm năng lượng mặt trời
+      solarOutput = Math.max(0, solarOutput - 0.5);
+    }
+    
+    // Xóa mây khi ra khỏi màn hình
+    if (left > window.innerWidth) {
+      cloud.remove();
+      clouds.splice(index, 1);
+    }
+  });
+}
+
+// Chuyển đổi ngày/đêm
+function toggleDay() {
+  isDay = !isDay;
+  
+  if (isDay) {
+    dayBtn.classList.add('active');
+    dayBtn.textContent = "NIGHT";
+    
+    // Di chuyển mặt trời lên
+    sun.style.top = '20%';
+    sun.style.left = '75%';
+    
+    // Thay đổi màu nền
+    sky.style.background = 'linear-gradient(to bottom, #1c7bee, #81c4f9)';
+    
+    // Hiển thị các tia năng lượng
+    if (!isCloudy) {
+      solarOutput = 7.5;
+    }
+    
+    // Kích hoạt các tấm pin mặt trời
+    solarPanels.forEach(panel => {
+      panel.classList.add('active');
+    });
+    
+    // Hiển thị dòng điện từ pin mặt trời đến nhà
+    solarToHouse.style.opacity = '1';
+    solarToHouse.style.stroke = '#00a2ff';
+    
+    // Nếu sản xuất nhiều hơn sử dụng, sạc pin
+    if (solarOutput > houseUsage) {
+      houseToBattery.style.opacity = '1';
+      batteryToHouse.style.opacity = '0';
+    } else {
+      houseToBattery.style.opacity = '0';
+      batteryToHouse.style.opacity = '1';
+    }
+    
+    // Ẩn sao
+    document.getElementById('stars').style.opacity = '0';
+  } else {
+    dayBtn.classList.remove('active');
+    dayBtn.textContent = "DAY";
+    
+    // Di chuyển mặt trời xuống
+    sun.style.top = '120%';
+    sun.style.left = '25%';
+    
+    // Thay đổi màu nền
+    sky.style.background = 'linear-gradient(to bottom, #0a2e38, #000)';
+    
+    // Tắt sản xuất năng lượng mặt trời
+    solarOutput = 0;
+    
+    // Tắt các tấm pin mặt trời
+    solarPanels.forEach(panel => {
+      panel.classList.remove('active');
+    });
+    
+    // Ẩn dòng điện từ pin mặt trời
+    solarToHouse.style.opacity = '0';
+    houseToBattery.style.opacity = '0';
+    
+    // Hiển thị dòng điện từ pin đến nhà
+    batteryToHouse.style.opacity = '1';
+    
+    // Hiển thị sao
+    document.getElementById('stars').style.opacity = '1';
+  }
+}
+
+// Chuyển đổi mây
+function toggleClouds() {
+  isCloudy = !isCloudy;
+  
+  if (isCloudy) {
+    cloudBtn.classList.add('active');
+    
+    // Bắt đầu tạo mây
+    createCloud();
+    
+    // Giảm năng lượng mặt trời
+    if (isDay) {
+      solarOutput = 3.5;
+    }
+  } else {
+    cloudBtn.classList.remove('active');
+    
+    // Xóa tất cả mây
+    clouds.forEach(cloud => {
+      cloud.remove();
+    });
+    clouds = [];
+    
+    // Khôi phục năng lượng mặt trời
+    if (isDay) {
+      solarOutput = 7.5;
+    }
+  }
+}
+
+// Chuyển đổi mức sử dụng
+function toggleUsage() {
+  isHighUsage = !isHighUsage;
+  
+  if (isHighUsage) {
+    usageBtn.classList.add('active');
+    houseUsage = 8.5;
+  } else {
+    usageBtn.classList.remove('active');
+    houseUsage = 2.1;
+  }
+}
+
+// Cập nhật thông số
+function updateMetrics() {
+  // Cập nhật pin dựa trên sản xuất và sử dụng
+  const netPower = solarOutput - houseUsage;
+  
+  if (netPower > 0) {
+    // Sạc pin
+    batteryPercent = Math.min(100, batteryPercent + netPower * 0.05);
+  } else {
+    // Xả pin
+    batteryPercent = Math.max(0, batteryPercent + netPower * 0.05);
+  }
+  
+  // Cập nhật hiển thị
+  solarOutputDisplay.textContent = solarOutput.toFixed(1);
+  batteryPercentDisplay.textContent = Math.round(batteryPercent);
+  houseUsageDisplay.textContent = houseUsage.toFixed(1);
+  
+  // Cập nhật mức pin
+  batteryLevel.style.height = batteryPercent + '%';
+  
+  // Thay đổi màu pin dựa trên mức
+  if (batteryPercent > 60) {
+    batteryLevel.style.background = '#00cc00';
+  } else if (batteryPercent > 20) {
+    batteryLevel.style.background = '#ffcc00';
+  } else {
+    batteryLevel.style.background = '#ff3300';
+  }
+  
+  // Cập nhật dòng điện
+  if (isDay && solarOutput > 0) {
+    if (solarOutput > houseUsage) {
+      // Sạc pin
+      houseToBattery.style.opacity = '1';
+      batteryToHouse.style.opacity = '0';
+    } else {
+      // Xả pin để bổ sung
+      houseToBattery.style.opacity = '0';
+      batteryToHouse.style.opacity = '1';
+    }
+  } else {
+    // Đêm - chỉ xả pin
+    solarToHouse.style.opacity = '0';
+    houseToBattery.style.opacity = '0';
+    batteryToHouse.style.opacity = '1';
+  }
+}
+
+// Vòng lặp chính
+function gameLoop() {
+  updateMetrics();
+  moveClouds();
+  
+  animationId = requestAnimationFrame(gameLoop);
+}
+
+// Xử lý sự kiện
+dayBtn.addEventListener('click', toggleDay);
+cloudBtn.addEventListener('click', toggleClouds);
+usageBtn.addEventListener('click', toggleUsage);
+
+// Khởi tạo
+createStars();
+gameLoop();
+</script>
+</body>
+</html>

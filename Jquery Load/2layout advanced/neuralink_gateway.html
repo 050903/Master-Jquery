@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Neuralink Gateway</title>
+<style>
+body{
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
+.container{
+  text-align:center;
+  max-width:600px;
+  padding:20px;
+}
+.logo{
+  color:#e82127;
+  font-size:32px;
+  font-weight:bold;
+  margin-bottom:20px;
+  letter-spacing:2px;
+}
+.progress{
+  width:100%;
+  height:4px;
+  background:#222;
+  margin:30px 0;
+  position:relative;
+  overflow:hidden;
+}
+.progress-bar{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#e82127,#00d2ff);
+  transition:width 0.5s;
+}
+.status{
+  font-family:monospace;
+  color:#0f0;
+  margin:20px 0;
+  height:20px;
+}
+.btn{
+  background:#e82127;
+  color:#fff;
+  border:none;
+  padding:12px 30px;
+  font-size:16px;
+  border-radius:30px;
+  cursor:pointer;
+  margin-top:20px;
+  transition:all 0.3s;
+  opacity:0;
+  pointer-events:none;
+}
+.btn:hover{
+  background:#c41e21;
+  transform:scale(1.05);
+}
+.btn.active{
+  opacity:1;
+  pointer-events:auto;
+}
+.brain{
+  width:100px;
+  height:100px;
+  margin-bottom:30px;
+  position:relative;
+}
+.brain svg{
+  width:100%;
+  height:100%;
+}
+.brain path{
+  fill:none;
+  stroke:#e82127;
+  stroke-width:1;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:300;
+  stroke-dashoffset:300;
+  animation:draw 3s forwards;
+}
+@keyframes draw{
+  to{
+    stroke-dashoffset:0;
+  }
+}
+.pulse{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:50px;
+  height:50px;
+  background:rgba(232,33,39,0.3);
+  border-radius:50%;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%{
+    transform:translate(-50%,-50%) scale(0.5);
+    opacity:0.8;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(2);
+    opacity:0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="brain">
+    <div class="pulse"></div>
+    <svg viewBox="0 0 100 100">
+      <path d="M30,30 C40,10 60,10 70,30 C85,55 75,80 50,85 C25,80 15,55 30,30 Z"></path>
+      <path d="M50,30 C55,45 55,65 50,85"></path>
+      <path d="M30,50 C40,50 60,50 70,50"></path>
+      <path d="M40,40 C45,45 55,45 60,40"></path>
+      <path d="M40,60 C45,65 55,65 60,60"></path>
+    </svg>
+  </div>
+  
+  <div class="logo">NEURALINK GATEWAY</div>
+  
+  <p>Đang thiết lập kết nối với giao diện não-máy Neuralink...</p>
+  
+  <div class="progress">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  
+  <div class="status" id="status">Khởi tạo kết nối...</div>
+  
+  <button class="btn" id="connect-btn">KẾT NỐI</button>
+</div>
+
+<script>
+// Mô phỏng quá trình kết nối
+const progressBar = document.getElementById('progress-bar');
+const status = document.getElementById('status');
+const connectBtn = document.getElementById('connect-btn');
+
+const messages = [
+  "Khởi tạo kết nối...",
+  "Quét sóng não...",
+  "Đồng bộ hóa giao diện...",
+  "Thiết lập kênh truyền dữ liệu...",
+  "Kiểm tra bảo mật...",
+  "Tối ưu hóa băng thông...",
+  "Kết nối thành công!"
+];
+
+let progress = 0;
+let messageIndex = 0;
+
+// Cập nhật tiến trình
+const interval = setInterval(() => {
+  progress += Math.random() * 15;
+  
+  if (progress >= 100) {
+    progress = 100;
+    clearInterval(interval);
+    
+    // Hiển thị nút kết nối
+    setTimeout(() => {
+      connectBtn.classList.add('active');
+    }, 1000);
+  }
+  
+  progressBar.style.width = progress + '%';
+  
+  // Cập nhật thông báo
+  if (progress > messageIndex * (100 / (messages.length - 1))) {
+    status.textContent = messages[messageIndex];
+    messageIndex++;
+  }
+}, 500);
+
+// Xử lý nút kết nối
+connectBtn.addEventListener('click', () => {
+  window.location.href = 'neuralink_control.html';
+});
+</script>
+</body>
+</html>

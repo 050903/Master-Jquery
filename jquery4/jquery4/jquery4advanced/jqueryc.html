@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Content Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .hightlight {
+            background-color: rgba(106, 90, 205, 0.1);
+            border-left: 4px solid #6a5acd;
+        }
+        
+        .hang {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hang:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        thead tr {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 10;
+        }
+
+        .action-links a {
+            margin-right: 8px;
+            text-decoration: none;
+            color: #6e8efb;
+            transition: color 0.2s;
+        }
+        
+        .action-links a:hover {
+            color: #a777e3;
+        }
+
+        .top-controls {
+            background-color: #f8f9fa;
+        }
+        
+        .top-controls td {
+            padding: 15px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: #6e8efb;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 5px;
+            color: #495057;
+        }
+
+        .analytics-indicator {
+            display: inline-block;
+            width: 50px;
+            height: 6px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .analytics-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .checkbox-styled {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .ai-suggestion {
+            background-color: #f0f7ff;
+            border-left: 4px solid #6e8efb;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .ai-suggestion-title {
+            font-weight: 600;
+            color: #6e8efb;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .trending-up {
+            color: #28a745;
+        }
+
+        .trending-down {
+            color: #dc3545;
+        }
+
+        .neutral {
+            color: #6c757d;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title"><i class="fas fa-brain"></i> AI-Powered Content Management</h1>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Active Topics</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">6,860</div>
+                    <div class="stat-label">Total Views</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0.82</div>
+                    <div class="stat-label">Avg. Engagement</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search topics...">
+            <button class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+
+        <div class="filter-container">
+            <select class="filter-select" id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="1">Tin công nghệ</option>
+                <option value="2">Tin giải trí</option>
+                <option value="3">Tin kinh tế</option>
+                <option value="4">Tin thể thao</option>
+                <option value="5">Tin giáo dục</option>
+            </select>
+            <select class="filter-select" id="sortBy">
+                <option value="engagement">Sort by Engagement</option>
+                <option value="views">Sort by Views</option>
+                <option value="growth">Sort by Growth</option>
+                <option value="name">Sort by Name</option>
+            </select>
+        </div>
+
+        <form id="form1" method="post" action="loaitin_them.php">
+            <table id="dstin" align="center" border="0" cellpadding="4" cellspacing="0">
+                <thead>
+                    <tr class="top-controls">
+                        <td colspan="4" align="left">
+                            <button type="button" class="btn btn-danger" id="xoathet"><i class="fas fa-trash-alt"></i> Delete</button>
+                            <button type="button" class="btn btn-primary" id="chinhthet"><i class="fas fa-edit"></i> Edit</button>
+                        </td>
+                        <td colspan="4" align="right">
+                            <a href="loaitin_them.php" class="btn btn-primary"><i class="fas fa-plus"></i> Add New</a>
+                            <select name="cbthemnhieu" id="cbthemnhieu">
+                                <option value="1">1</option>
+                                <option selected="selected" value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" id="btnthemnhieu"><i class="fas fa-plus-circle"></i> Add Multiple</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th align="center">
+                            <input id="chonhet" type="checkbox" class="checkbox-styled"/>
+                        </th>
+                        <th>ID</th>
+                        <th>Topic Name</th>
+                        <th>Status</th>
+                        <th>Order</th>
+                        <th>Category</th>
+                        <th>Analytics</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="data-rows">
+                    <!-- Data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </form>
+
+        <!-- AI Insights Modal -->
+        <div id="aiInsightsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <h2 class="modal-title"><i class="fas fa-brain"></i> AI Content Insights</h2>
+                <div id="modalContent">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+                <div style="margin-top: 20px;">
+                    <canvas id="analyticsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Load data from JSON file
+            loadData();
+
+            // Search functionality
+            $("#searchBtn").click(function() {
+                filterData();
+            });
+
+            $("#searchInput").on("keyup", function(e) {
+                if (e.key === "Enter") {
+                    filterData();
+                }
+            });
+
+            // Filter by category
+            $("#categoryFilter").change(function() {
+                filterData();
+            });
+
+            // Sort functionality
+            $("#sortBy").change(function() {
+                filterData();
+            });
+
+            function filterData() {
+                const searchTerm = $("#searchInput").val().toLowerCase();
+                const categoryFilter = $("#categoryFilter").val();
+                const sortBy = $("#sortBy").val();
+
+                $.getJSON('data.json?' + new Date().getTime(), function(data) {
+                    // Filter data
+                    let filteredData = data.loaitin.filter(function(item) {
+                        const matchesSearch = item.Ten.toLowerCase().includes(searchTerm) || 
+                                            (item.Tags && item.Tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+                        const matchesCategory = categoryFilter === "all" || item.idTL.toString() === categoryFilter;
+                        return matchesSearch && matchesCategory;
+                    });
+
+                    // Sort data
+                    filteredData.sort(function(a, b) {
+                        switch(sortBy) {
+                            case "engagement":
+                                return (b.Analytics?.Engagement || 0) - (a.Analytics?.Engagement || 0);
+                            case "views":
+                                return (b.Analytics?.Views || 0) - (a.Analytics?.Views || 0);
+                            case "growth":
+                                return (b.Analytics?.Growth || 0) - (a.Analytics?.Growth || 0);
+                            case "name":
+                                return a.Ten.localeCompare(b.Ten);
+                            default:
+                                return 0;
+                        }
+                    });
+
+                    renderData(filteredData);
+                });
+            }
+
+            function loadData() {
+                $.getJSON('data.json?' + new Date().getTime(), function(data) {
+                    renderData(data.loaitin);
+                }).fail(function() {
+                    alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+                });
+            }
+
+            function renderData(items) {
+                var rows = '';
+                $.each(items, function(index, item) {
+                    const hasAnalytics = item.Analytics !== undefined;
+                    const engagementColor = hasAnalytics ? getEngagementColor(item.Analytics.Engagement) : '#6c757d';
+                    const engagementWidth = hasAnalytics ? (item.Analytics.Engagement * 100) + '%' : '0%';
+                    const growthIcon = hasAnalytics ? getGrowthIcon(item.Analytics.Growth) : '';
+                    
+                    rows += '<tr class="hang">';
+                    rows += '<td><input name="chon" id="chon' + item.idLT + '" type="checkbox" value="' + item.idLT + '" class="chon checkbox-styled"/></td>';
+                    rows += '<td>' + item.idLT + '</td>';
+                    rows += '<td>' + item.Ten;
+                    
+                    // Add tags if available
+                    if (item.Tags && item.Tags.length > 0) {
+                        rows += '<br>';
+                        item.Tags.forEach(function(tag) {
+                            rows += '<span class="tag">' + tag + '</span>';
+                        });
+                    }
+                    rows += '</td>';
+                    
+                    rows += '<td>' + (item.AnHien ? '<span style="color: #28a745;"><i class="fas fa-eye"></i> Visible</span>' : '<span style="color: #dc3545;"><i class="fas fa-eye-slash"></i> Hidden</span>') + '</td>';
+                    rows += '<td>' + item.ThuTu + '</td>';
+                    rows += '<td>' + item.TenTL + '</td>';
+                    
+                    // Analytics column
+                    rows += '<td>';
+                    if (hasAnalytics) {
+                        rows += '<div><small>Views: ' + item.Analytics.Views.toLocaleString() + '</small></div>';
+                        rows += '<div style="display: flex; align-items: center; gap: 5px;"><small>Engagement:</small>';
+                        rows += '<div class="analytics-indicator"><div class="analytics-bar" style="width: ' + engagementWidth + '; background-color: ' + engagementColor + '"></div></div>';
+                        rows += '</div>';
+                        rows += '<div><small>Growth: ' + growthIcon + ' ' + item.Analytics.Growth + '%</small></div>';
+                    } else {
+                        rows += '<small>No data</small>';
+                    }
+                    rows += '</td>';
+                    
+                    // Actions column
+                    rows += '<td class="action-links">';
+                    rows += '<a href="loaitin_chinh.php?idLT=' + item.idLT + '" title="Edit"><i class="fas fa-edit"></i></a>';
+                    rows += '<a href="loaitin_xoa.php?idLT=' + item.idLT + '" onclick="return confirm(\'Are you sure you want to delete this item?\');" title="Delete"><i class="fas fa-trash-alt"></i></a>';
+                    rows += '<a href="#" class="view-insights" data-id="' + item.idLT + '" title="AI Insights"><i class="fas fa-brain"></i></a>';
+                    rows += '</td></tr>';
+                });
+                
+                if (rows === '') {
+                    rows = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No items found</td></tr>';
+                }
+                
+                $('#data-rows').html(rows);
+                
+                // Reattach event handlers after loading data
+                attachEventHandlers();
+            }
+
+            function getEngagementColor(engagement) {
+                if (engagement >= 0.8) return '#28a745'; // High engagement - green
+                if (engagement >= 0.5) return '#ffc107'; // Medium engagement - yellow
+                return '#dc3545'; // Low engagement - red
+            }
+
+            function getGrowthIcon(growth) {
+                if (growth > 15) return '<i class="fas fa-arrow-up trending-up"></i>';
+                if (growth < 0) return '<i class="fas fa-arrow-down trending-down"></i>';
+                return '<i class="fas fa-minus neutral"></i>';
+            }
+
+            function attachEventHandlers() {
+                // Highlight row on hover
+                $('tr.hang').hover(
+                    function() {
+                        $(this).addClass('hightlight');
+                    },
+                    function() {
+                        $(this).removeClass('hightlight');
+                    }
+                );
+
+                // Update "Check All" checkbox based on individual checkboxes
+                $('input[name=chon]').on('click', function() {
+                    if ($('input[name=chon]:checked').length === $('input[name=chon]').length && $('input[name=chon]').length > 0) {
+                        $('#chonhet').prop('checked', true);
+                    } else {
+                        $('#chonhet').prop('checked', false);
+                    }
+                });
+
+                // AI Insights modal
+                $('.view-insights').on('click', function(e) {
+                    e.preventDefault();
+                    const itemId = $(this).data('id');
+                    showAIInsights(itemId);
+                });
+            }
+
+            // Select/Deselect all checkboxes
+            $('#chonhet').click(function(){
+                var status = this.checked;
+                $('input[name=chon]').each(function(){
+                    this.checked = status;
+                });
+            });
+
+            // Edit multiple items
+            $('#chinhthet').click(function() {
+                var listid = "";
+                $('input[name=chon]:checked').each(function() {
+                    listid += ',' + $(this).val();
+                });
+
+                if (listid.length > 0) {
+                    listid = listid.substring(1);
+                    window.location = "chinh.php?listid=" + listid;
+                } else {
+                    alert('Please select at least one item to edit.');
+                }
+            });
+
+            // Delete multiple items
+            $('#xoathet').click(function() {
+                var selectedCount = $('input[name=chon]:checked').length;
+                if (selectedCount === 0) {
+                    alert('Please select at least one item to delete.');
+                    return false;
+                }
+
+                if (!confirm('Are you sure you want to delete ' + selectedCount + ' selected items?')) {
+                    return false;
+                }
+
+                var listid = "";
+                $('input[name=chon]:checked').each(function() {
+                    listid += ',' + $(this).val();
+                });
+
+                listid = listid.substring(1);
+                window.location = "xoa.php?listid=" + listid;
+            });
+
+            // Add multiple items
+            $('#btnthemnhieu').click(function() {
+                var numToAdd = $('#cbthemnhieu').val();
+                window.location = "loaitin_themnhieu.php?num=" + numToAdd;
+            });
+
+            // Modal functionality
+            $("#closeModal").click(function() {
+                $("#aiInsightsModal").hide();
+            });
+
+            $(window).click(function(e) {
+                if ($(e.target).is("#aiInsightsModal")) {
+                    $("#aiInsightsModal").hide();
+                }
+            });
+
+            // AI Insights functionality
+            function showAIInsights(itemId) {
+                $.getJSON('data.json?' + new Date().getTime(), function(data) {
+                    const item = data.loaitin.find(i => i.idLT == itemId);
+                    
+                    if (!item) {
+                        alert('Item not found');
+                        return;
+                    }
+
+                    let content = `
+                        <h3>${item.Ten}</h3>
+                        <p><strong>Category:</strong> ${item.TenTL}</p>
+                        <p><strong>Tags:</strong> ${item.Tags ? item.Tags.join(', ') : 'None'}</p>
+                        
+                        <div class="ai-suggestion">
+                            <div class="ai-suggestion-title">
+                                <i class="fas fa-lightbulb"></i> AI Content Recommendation
+                            </div>
+                            <p>Based on current trends and user engagement, consider ${getRecommendation(item)}.</p>
+                        </div>
+
+                        <div class="ai-suggestion">
+                            <div class="ai-suggestion-title">
+                                <i class="fas fa-chart-line"></i> Performance Analysis
+                            </div>
+                            <p>${getPerformanceAnalysis(item)}</p>
+                        </div>
+                    `;
+
+                    $("#modalContent").html(content);
+                    
+                    // Show the modal
+                    $("#aiInsightsModal").css("display", "flex");
+                    
+                    // Create chart if analytics data exists
+                    if (item.Analytics) {
+                        setTimeout(() => {
+                            createAnalyticsChart(item);
+                        }, 100);
+                    }
+                });
+            }
+
+            function getRecommendation(item) {
+                if (!item.Analytics) return "adding more detailed content to increase engagement";
+                
+                if (item.Analytics.Engagement > 0.8) {
+                    return "creating more content related to " + (item.Tags ? item.Tags[0] : "this topic") + " to capitalize on high engagement";
+                } else if (item.Analytics.Growth > 20) {
+                    return "focusing on this rapidly growing topic and expanding its coverage";
+                } else if (item.Analytics.Views > 2000) {
+                    return "adding more interactive elements to increase engagement on this popular topic";
+                } else {
+                    return "refreshing this content with more current information and trending keywords";
+                }
+            }
+
+            function getPerformanceAnalysis(item) {
+                if (!item.Analytics) return "No analytics data available for this item.";
+                
+                let analysis = "";
+                
+                if (item.Analytics.Engagement > 0.8) {
+                    analysis += "This content has <strong>excellent engagement</strong> (top 20%). ";
+                } else if (item.Analytics.Engagement > 0.5) {
+                    analysis += "This content has <strong>good engagement</strong>. ";
+                } else {
+                    analysis += "This content has <strong>below average engagement</strong>. ";
+                }
+                
+                if (item.Analytics.Growth > 15) {
+                    analysis += "It's showing <strong>strong growth</strong> in viewership. ";
+                } else if (item.Analytics.Growth > 0) {
+                    analysis += "It's showing <strong>steady growth</strong>. ";
+                } else {
+                    analysis += "It's <strong>declining</strong> in viewership. ";
+                }
+                
+                if (item.Analytics.Views > 2000) {
+                    analysis += "With <strong>" + item.Analytics.Views.toLocaleString() + " views</strong>, it's among your most viewed content.";
+                } else if (item.Analytics.Views > 1000) {
+                    analysis += "It has received <strong>" + item.Analytics.Views.toLocaleString() + " views</strong>, which is good.";
+                } else {
+                    analysis += "It has <strong>" + item.Analytics.Views.toLocaleString() + " views</strong>, which could be improved.";
+                }
+                
+                return analysis;
+            }
+
+            function createAnalyticsChart(item) {
+                const ctx = document.getElementById('analyticsChart').getContext('2d');
+                
+                // Sample data - in a real app, you'd have historical data
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                const viewsData = generateSampleData(item.Analytics.Views / 6, item.Analytics.Growth);
+                const engagementData = months.map(() => item.Analytics.Engagement * 100);
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: 'Views',
+                                data: viewsData,
+                                borderColor: '#6e8efb',
+                                backgroundColor: 'rgba(110, 142, 251, 0.1)',
+                                tension: 0.3,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Engagement %',
+                                data: engagementData,
+                                borderColor: '#a777e3',
+                                backgroundColor: 'rgba(167, 119, 227, 0.1)',
+                                tension: 0.3,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Views'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Engagement %'
+                                },
+                                min: 0,
+                                max: 100,
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function generateSampleData(baseValue, growth) {
+                const data = [];
+                let currentValue = baseValue * 0.7; // Start lower
+                
+                for (let i = 0; i < 6; i++) {
+                    data.push(Math.round(currentValue));
+                    // Apply growth trend
+                    currentValue *= (1 + (growth / 100) / 6);
+                }
+                
+                return data;
+            }
+        });
+    </script>
+</body>
+</html>
